@@ -13,6 +13,7 @@ libeosbdecays_la_SOURCES = \
 	b-to-pi-l-x-nu.cc b-to-pi-l-x-nu.hh \
 	b-to-v-l-nu.hh \
 	bs-to-kstar-l-nu.cc bs-to-kstar-l-nu.hh \
+	lambdab-to-lambdac2625-l-nu.cc lambdab-to-lambdac2625-l-nu.hh \
 	inclusive-b-to-u.cc inclusive-b-to-u.hh \
 	properties.cc properties.hh
 libeosbdecays_la_LIBADD = \

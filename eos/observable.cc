@@ -29,6 +29,7 @@
 #include <eos/b-decays/b-to-pi-pi-l-nu.hh>
 #include <eos/b-decays/b-to-d-l-nu.hh>
 #include <eos/b-decays/bs-to-kstar-l-nu.hh>
+#include <eos/b-decays/lambdab-to-lambdac2625-l-nu.hh>
 #include <eos/b-decays/inclusive-b-to-u.hh>
 #include <eos/b-decays/properties.hh>
 #include <eos/rare-b-decays/exclusive-b-to-dilepton.hh>
@@ -523,6 +524,23 @@ namespace eos
 
             make_observable("B_s->K^*lnu::R_perp",
                     &BsToKstarLeptonNeutrinoRatios::ratio_perp),
+
+	    // Lambda_b -> Lambda_c(2625) l nubar Ratios
+            make_observable("Lambda_b->Lambda_c(2625)lnu::dBR/ds",
+                            &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio,
+                            std::make_tuple("s")),
+
+            make_observable("Lambda_b->Lambda_c(2625)lnu::BR",
+                            &LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio,
+                            std::make_tuple("s_min", "s_max")),
+
+            make_observable("Lambda_b->Lambda_c(2625)lnu::R_Lambda_c(2625)(s)",
+                            &LambdabToLambdac2625LeptonNeutrino::differential_r_lambdac2625,
+                            std::make_tuple("s")),
+
+            make_observable("Lambda_b->Lambda_c(2625)lnu::R_Lambda_c(2625)",
+                            &LambdabToLambdac2625LeptonNeutrino::integrated_r_lambdac2625),
+
 
             /* Exclusive Rare B Decays */
 
