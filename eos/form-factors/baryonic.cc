@@ -166,4 +166,66 @@ namespace eos
 
         return result;
     }
+
+    /* J=1/2^+ -> J=3/2^- Processes */
+
+    /* Lambda_b -> Lambda_c(2625) */
+
+    const constexpr double LambdaBToLambdaC2625::tm;
+    const constexpr double LambdaBToLambdaC2625::tp;
+    const constexpr double LambdaBToLambdaC2625::mR2_0m;
+    const constexpr double LambdaBToLambdaC2625::mR2_0p;
+    const constexpr double LambdaBToLambdaC2625::mR2_1m;
+    const constexpr double LambdaBToLambdaC2625::mR2_1p;
+
+    FormFactors<OneHalfPlusToThreeHalfMinus>::~FormFactors()
+    {
+    }
+
+    std::shared_ptr<FormFactors<OneHalfPlusToThreeHalfMinus>>
+    FormFactorFactory<OneHalfPlusToThreeHalfMinus>::create(const std::string & label, const Parameters & parameters)
+    {
+        std::shared_ptr<FormFactors<OneHalfPlusToThreeHalfMinus>> result;
+
+        typedef std::tuple<std::string, std::string> KeyType;
+        typedef std::function<FormFactors<OneHalfPlusToThreeHalfMinus> * (const Parameters &, unsigned)> ValueType;
+        static const std::map<KeyType, ValueType> form_factors
+        {
+	  { KeyType("Lambda_b->Lambda_c(2625)",     "BBGIOvD2017"),   &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make                      },
+        };
+
+        /*
+         * Labels have the form
+         *
+         *   PROCESS@NAME[:SET]
+         *
+         * The brackets indicate the latter part to be optional.
+         */
+
+        std::string process, name, input(label);
+        unsigned set(0);
+
+        std::string::size_type sep_at(input.find('@')), sep_colon(input.find(':'));
+        if (std::string::npos == sep_at)
+            return result;
+
+        if (std::string::npos != sep_colon)
+        {
+            set = destringify<unsigned>(input.substr(sep_colon + 1));
+            input.erase(sep_colon + 1);
+        }
+
+        name = input.substr(sep_at + 1);
+        process = input.substr(0, sep_at);
+
+        auto i = form_factors.find(KeyType(process, name));
+        if (form_factors.cend() == i)
+            return result;
+
+        result = std::shared_ptr<FormFactors<OneHalfPlusToThreeHalfMinus>>(i->second(parameters, set));
+
+        return result;
+    }
+
+
 }
