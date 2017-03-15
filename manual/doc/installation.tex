@@ -25,7 +25,8 @@ software to be pre-installed:
     \item[\package{libtool}] the GNU tool for generic library support, in version 2.4.2 or higher,
     \item[\package{pkg-config}] the freedesktop.org library helper, in version 0.28 or higher,
     \item[\package{libboost-filesystem-dev}] the BOOST library for file system access,
-    \item[\package{libboost-system-dev}] the BOOST library for system-specific error conditions.
+    \item[\package{libboost-system-dev}] the BOOST library for system-specific error conditions,
+    \item[\package{libyaml-cpp-dev}] the YAML parser and emitter for C++.
 \end{description}
 If you intend to use the Python \cite{Python} interface to the EOS library, you will need
 to additionally install
@@ -172,7 +173,7 @@ shell this can be achieved by adding the lines
 export PATH+=":/opt/pkgs/eos/bin"
 export PYTHONPATH+=":/opt/pkgs/eos/lib/python2.7/site-packages"
 \end{commandline}
-to you \texttt{.bashrc} file. In the above, the last line is optional and should only be
+to your \texttt{.bashrc} file. In the above, the last line is optional and should only be
 added if you built EOS with Python support. Note that \texttt{python2.7} should be
 replaced by the apppropriate Python version against which EOS was built.
 
