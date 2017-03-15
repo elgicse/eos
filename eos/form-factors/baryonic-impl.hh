@@ -232,14 +232,15 @@ namespace eos
         static constexpr double m2 = 2.62811;
         // semileptonic kinematic endpoint
         static constexpr double tm = (m1 - m2) * (m1 - m2);
-        // pair production threshold: B + D
-        static constexpr double tp = (5.279 + 1.864) * (5.279 + 1.864);
+        // pair production threshold: Lambda_b + Lambda_c(2625)
+        static constexpr double tp = (m1 + m2) * (m1 + m2);
         // first resonances sorted by spin/parity
         // we use the shifts from [DLM2015], table VII.
-        static constexpr double mR2_0m = 6.275 * 6.275;
-        static constexpr double mR2_0p = 5.711 * 5.711;
-        static constexpr double mR2_1m = 5.416 * 5.416;
-        static constexpr double mR2_1p = 5.750 * 5.750;
+        static constexpr double mBc = 6.2751;
+        static constexpr double mR2_0m = std::pow(mBc + 0.000, 2);
+        static constexpr double mR2_0p = std::pow(mBc + 0.449, 2);
+        static constexpr double mR2_1m = std::pow(mBc + 0.056, 2);
+        static constexpr double mR2_1p = std::pow(mBc + 0.492, 2);
     };
 
     template <typename Process_> class BBGIOvD2017FormFactors :
@@ -334,7 +335,7 @@ namespace eos
 
 	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
+	      return 0.0;// / (1.0 - s / mR2) * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
             }
 
             // axial vector current
@@ -375,7 +376,7 @@ namespace eos
 
                 // Using alpha_0_long_a instead of alpha_0_perp_a, in order to
                 // fulfill relation eq. (7), [DM2016], p. 3.
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
+	      return 0.0;// / (1.0 - s / mR2) * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
             }
     };
 }
