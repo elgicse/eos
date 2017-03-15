@@ -155,9 +155,8 @@ namespace eos
             const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - pow(s, 2);
             const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - pow(s, 2);
             const double pi = acos(-1.0);
-            const auto v_cb = norm(model->ckm_cb());
 
-            double val = pow(g_fermi, 2) * pow(v_cb, 2) * sqrt(s_plus * s_minus);
+            double val = pow(g_fermi, 2) * sqrt(s_plus * s_minus);
             val *= (1 / (384 * pow(pi, 2) * pow(m_Lambdab, 3)));
             val *= pow(1 - pow(m_l, 2) / pow(s, 2), 2);
 
@@ -167,29 +166,17 @@ namespace eos
         // normalized to V_cb = 1
         double normalized_differential_decay_width(const double & s) const
         {
-            //double fp = form_factors->f_p(s);
-            //double f0 = form_factors->f_0(s);
-            //double lam = lambda(m_B * m_B, m_D * m_D, s);
-            //double norm = power_of<2>(g_fermi())
-            //    / (384.0 * power_of<3>(M_PI * m_B));
-            //// make sure we return NaN if s < m_l^2
-            //double sqrtv = sqrt(1.0 - m_l * m_l / s);
-            //double v = sqrtv * sqrtv, v2 = v * v;
-	        //
-            //// correct result
-            //return norm * sqrt(lam) * v2 * ((3.0 - v) * fp * fp * lam + 3.0 * f0 * f0 * (1.0 - v) * power_of<2>(m_B * m_B - m_D * m_D));
-	       return 1.0;
+            return gamma_0(s) * 2 * (a_l(s) + c_l(s) / 3);
         }
 
         double differential_decay_width(const double & s) const
         {
-          return 1.0; //normalized_differential_decay_width(s) * std::norm(model->ckm_cb());
+            return normalized_differential_decay_width(s) * std::norm(model->ckm_cb());
         }
 
         double differential_branching_ratio(const double & s) const
         {
-           std::cout << std::endl << b_l(s) << std::endl << c_l(s) << std::endl << gamma_0(s) << std::endl;
-    	   return a_l(s); //differential_decay_width(s) * tau_B / hbar;
+            return differential_decay_width(s) * tau_Lambdab / hbar;
         }
     };
 
