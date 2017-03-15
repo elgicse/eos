@@ -525,7 +525,7 @@ namespace eos
             make_observable("B_s->K^*lnu::R_perp",
                     &BsToKstarLeptonNeutrinoRatios::ratio_perp),
 
-	    // Lambda_b -> Lambda_c(2625) l nubar Ratios
+            // Lambda_b -> Lambda_c(2625) l nubar Ratios
             make_observable("Lambda_b->Lambda_c(2625)lnu::dBR/ds",
                             &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio,
                             std::make_tuple("s")),
