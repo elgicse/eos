@@ -27,6 +27,12 @@
 #include <eos/utils/private_implementation_pattern-impl.hh>
 #include <eos/utils/save.hh>
 
+#include <math.h>
+// Only for debug purposes
+#include <iostream>
+
+using namespace std;
+
 namespace eos
 {
     template <>
@@ -70,6 +76,94 @@ namespace eos
             u.uses(*model);
         }
 
+        // [BBGIOvD] parametrization for the differential decay width
+        double a_l(const double & s) const
+        {
+            const auto F12T = form_factors->f_time12_v(s);
+            const auto F120 = form_factors->f_long12_v(s);
+            const auto F12P = form_factors->f_perp12_v(s);
+            const auto F32P = form_factors->f_perp32_v(s);
+            const auto G12T = form_factors->f_time12_a(s);
+            const auto G120 = form_factors->f_long12_a(s);
+            const auto G12P = form_factors->f_perp12_a(s);
+            const auto G32P = form_factors->f_perp32_a(s);
+            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - pow(s, 2);
+            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - pow(s, 2);
+
+            std::cout   << "Elena " << F12T
+                        << " " << F120
+                        << " " << F12P
+                        << " " << F32P
+                        << " " << G12T
+                        << " " << G120
+                        << " " << G12P
+                        << " " << G32P
+                        << std::endl;
+
+            double val = pow(F12T, 2) * (pow(m_l, 2) / pow(s, 2)) * pow((m_Lambdab - m_Lambdac2625), 2) * s_plus;
+            val += (pow(F120, 2) * pow((m_Lambdab + m_Lambdac2625), 2) + (pow(F12P, 2) + 3 * pow(F32P, 2)) * (pow(m_l, 2) + pow(s, 2))) * s_minus;
+            val += pow(G12T, 2) * (pow(m_l, 2) / pow(s, 2)) * pow((m_Lambdab + m_Lambdac2625), 2) * s_minus;
+            val += (pow(G120, 2) * pow((m_Lambdab - m_Lambdac2625), 2) + (pow(G12P, 2) + 3 * pow(G32P, 2)) * (pow(m_l, 2) + pow(s, 2))) * s_plus;
+
+            return val;
+        }
+
+        double b_l(const double & s) const
+        {
+            const auto F12T = form_factors->f_time12_v(s);
+            const auto F120 = form_factors->f_long12_v(s);
+            const auto F12P = form_factors->f_perp12_v(s);
+            const auto F32P = form_factors->f_perp32_v(s);
+            const auto G12T = form_factors->f_time12_a(s);
+            const auto G120 = form_factors->f_long12_a(s);
+            const auto G12P = form_factors->f_perp12_a(s);
+            const auto G32P = form_factors->f_perp32_a(s);
+            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - pow(s, 2);
+            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - pow(s, 2);
+
+            double val = 2 * (F12T * F120 + G12T * G120) * pow(m_l, 2) / pow(s, 2);
+            val *= (pow(m_Lambdab, 2) - pow(m_Lambdac2625, 2)) * sqrt(s_plus * s_minus);
+            val += (-4) * pow(s, 2) * sqrt(s_plus * s_minus) * (F12P * G12P + 3 * F32P * G32P);
+
+            return val;
+        }
+
+        double c_l(const double & s) const
+        {
+            const auto F12T = form_factors->f_time12_v(s);
+            const auto F120 = form_factors->f_long12_v(s);
+            const auto F12P = form_factors->f_perp12_v(s);
+            const auto F32P = form_factors->f_perp32_v(s);
+            const auto G12T = form_factors->f_time12_a(s);
+            const auto G120 = form_factors->f_long12_a(s);
+            const auto G12P = form_factors->f_perp12_a(s);
+            const auto G32P = form_factors->f_perp32_a(s);
+            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - pow(s, 2);
+            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - pow(s, 2);
+
+            double val = pow(F120, 2) * (pow(m_Lambdab, 2) + pow(m_Lambdac2625, 2));
+            val += (-1) * pow(s, 2) * (pow(F12P, 2) * 3 * pow(F32P, 2));
+            val += pow(G120, 2) * (pow(m_Lambdab, 2) - pow(m_Lambdac2625, 2));
+            val += (-1) * pow(s, 2) * (pow(G12P, 2) * 3 * pow(G32P, 2));
+            val *= (-1) * (1 - pow(m_l, 2) / pow(s, 2));
+
+            return val;
+        }
+
+        double gamma_0(const double & s) const
+        {
+            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - pow(s, 2);
+            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - pow(s, 2);
+            const double pi = acos(-1.0);
+            const auto v_cb = norm(model->ckm_cb());
+
+            double val = pow(g_fermi, 2) * pow(v_cb, 2) * sqrt(s_plus * s_minus);
+            val *= (1 / (384 * pow(pi, 2) * pow(m_Lambdab, 3)));
+            val *= pow(1 - pow(m_l, 2) / pow(s, 2), 2);
+
+            return val;
+        }
+
         // normalized to V_cb = 1
         double normalized_differential_decay_width(const double & s) const
         {
@@ -81,20 +175,21 @@ namespace eos
             //// make sure we return NaN if s < m_l^2
             //double sqrtv = sqrt(1.0 - m_l * m_l / s);
             //double v = sqrtv * sqrtv, v2 = v * v;
-	    //
+	        //
             //// correct result
             //return norm * sqrt(lam) * v2 * ((3.0 - v) * fp * fp * lam + 3.0 * f0 * f0 * (1.0 - v) * power_of<2>(m_B * m_B - m_D * m_D));
-	  return 1.0;
+	       return 1.0;
         }
 
         double differential_decay_width(const double & s) const
         {
-	  return 1.0; //normalized_differential_decay_width(s) * std::norm(model->ckm_cb());
+          return 1.0; //normalized_differential_decay_width(s) * std::norm(model->ckm_cb());
         }
 
         double differential_branching_ratio(const double & s) const
         {
-	  return 1.0; //differential_decay_width(s) * tau_B / hbar;
+           std::cout << std::endl << b_l(s) << std::endl << c_l(s) << std::endl << gamma_0(s) << std::endl;
+    	   return a_l(s); //differential_decay_width(s) * tau_B / hbar;
         }
     };
 
