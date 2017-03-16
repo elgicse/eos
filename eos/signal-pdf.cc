@@ -154,7 +154,7 @@ namespace eos
 
             make_signal_pdf("Lambda_b->Lambda_c(2625)lnu::dGamma",
                     &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio,
-                    KinematicRange{ "s", 0.0, 8.9478, LambdabToLambdac2625LeptonNeutrino::kinematics_description_s }),
+                    KinematicRange{ "s", 0.011, 8.9478, LambdabToLambdac2625LeptonNeutrino::kinematics_description_s }),
 
             /* Exclusive Rare B Decays */
 
