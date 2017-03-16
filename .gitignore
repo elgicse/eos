@@ -36,3 +36,7 @@ stamp-h1
 # Test files
 *.trs
 **/*.trs
+
+# Data files
+*.hdf5
+**/*.hdf5
