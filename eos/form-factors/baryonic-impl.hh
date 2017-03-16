@@ -267,7 +267,7 @@ namespace eos
 
         public:
       BBGIOvD2017FormFactors(const Parameters & p)/* :
-	        // time12, V
+            // time12, V
                 _alpha_0_time12_v(p["Lambda_b->Lambda::a_0_time12^V@DM2016"], *this),
                 _alpha_1_time12_v(p["Lambda_b->Lambda::a_1_time12^V@DM2016"], *this),
                 _alpha_2_time12_v(p["Lambda_b->Lambda::a_2_time12^V@DM2016"], *this),
@@ -291,7 +291,7 @@ namespace eos
                 // perp12, A
                 _alpha_1_perp12_a(p["Lambda_b->Lambda::a_1_perp12^A@DM2016"], *this),
                 _alpha_2_perp12_a(p["Lambda_b->Lambda::a_2_perp12^A@DM2016"], *this), */
-	      
+          
 
             {
             }
@@ -304,79 +304,79 @@ namespace eos
             // vector current
             virtual double f_time12_v(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_0p;
+                static const double mR2 = Process_::mR2_0m;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_time_v() + _alpha_1_time_v() * z + _alpha_2_time_v() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_time_v() + _alpha_1_time_v() * z + _alpha_2_time_v() * z2);
             }
 
             virtual double f_long12_v(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1m;
+                static const double mR2 = Process_::mR2_1p;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_long_v() + _alpha_1_long_v() * z + _alpha_2_long_v() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_long_v() + _alpha_1_long_v() * z + _alpha_2_long_v() * z2);
             }
 
             virtual double f_perp12_v(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1m;
+                static const double mR2 = Process_::mR2_1p;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
             }
 
             virtual double f_perp32_v(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1m;
+                static const double mR2 = Process_::mR2_1p;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 0.0;// / (1.0 - s / mR2) * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
+                return 0.2 / (1.0 - s / mR2); // * (_alpha_0_perp_v() + _alpha_1_perp_v() * z + _alpha_2_perp_v() * z2);
             }
 
             // axial vector current
             virtual double f_time12_a(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_0m;
+                static const double mR2 = Process_::mR2_0p;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_time_a() + _alpha_1_time_a() * z + _alpha_2_time_a() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_time_a() + _alpha_1_time_a() * z + _alpha_2_time_a() * z2);
             }
 
             virtual double f_long12_a(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1p;
+                static const double mR2 = Process_::mR2_1m;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_long_a() + _alpha_1_long_a() * z + _alpha_2_long_a() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_long_a() + _alpha_1_long_a() * z + _alpha_2_long_a() * z2);
             }
 
             virtual double f_perp12_a(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1p;
+                static const double mR2 = Process_::mR2_1m;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
                 // Using alpha_0_long_a instead of alpha_0_perp_a, in order to
                 // fulfill relation eq. (7), [DM2016], p. 3.
-	      return 1.0;// / (1.0 - s / mR2) * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
+                return 1.0 / (1.0 - s / mR2); // * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
             }
 
             virtual double f_perp32_a(const double & s) const
             {
-	      //static const double mR2 = Process_::mR2_1p;
+                static const double mR2 = Process_::mR2_1m;
 
-	      //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
+                //const double z = _z(s, Process_::tp, Process_::tm), z2 = z * z;
 
                 // Using alpha_0_long_a instead of alpha_0_perp_a, in order to
                 // fulfill relation eq. (7), [DM2016], p. 3.
-	      return 0.0;// / (1.0 - s / mR2) * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
+                return 0.2 / (1.0 - s / mR2); // * (_alpha_0_long_a() + _alpha_1_perp_a() * z + _alpha_2_perp_a() * z2);
             }
     };
 }
