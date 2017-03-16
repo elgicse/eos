@@ -148,6 +148,10 @@ namespace eos
         // normalized to V_cb = 1
         double normalized_differential_decay_width(const double & s) const
         {
+            if (s < m_l * m_l)
+            {
+                return 0.0;
+            }
             return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
         }
 
