@@ -481,17 +481,17 @@ namespace eos
             // vector current
             virtual double f_time12_v(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_long12_v(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_perp12_v(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_perp32_v(const double & s) const
@@ -502,17 +502,17 @@ namespace eos
             // axial vector current
             virtual double f_time12_a(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_long12_a(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_perp12_a(const double & s) const
             {
-                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+                return 1.0 + _rho * (1.0 - s / s_max);
             }
 
             virtual double f_perp32_a(const double & s) const
