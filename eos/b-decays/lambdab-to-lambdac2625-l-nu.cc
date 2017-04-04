@@ -141,7 +141,9 @@ namespace eos
             double val = pow(g_fermi, 2.) * sqrt(s_plus * s_minus);
             val *= (1. / (384. * pow(M_PI * m_Lambdab, 3)));
             val *= pow((1. - pow(m_l, 2.) / s), 2.);
-
+            // Correct normalization
+            // Allows to remove sqrt(lambda) from the form factors
+            val *= ((s_plus * s_minus) / (m_Lambdab * m_Lambdab * m_Lambdac2625 * m_Lambdac2625));
             return val;
         }
 
