@@ -591,6 +591,13 @@
     max:     +0.000
     comments: ""
 
+# --fix Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017 value
+"Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017" :
+    central: -0.05
+    min:     -0.05
+    max:     -0.05
+    comments: "Slope of the LO IW function, [-1.0, 1.0]"
+
 # subleading parameter for Lambda_b -> Lambda ll decays according to
 # [MvD2016].
 "Lambda_b->Lambdall::r_perp_0@MvD2016" :
