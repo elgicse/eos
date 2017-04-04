@@ -198,11 +198,11 @@ namespace eos
 
         static const std::map<KeyType, ValueType> form_factors
         {
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017"),             &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1pole"),       &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1polelambda"), &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-constant"),    &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-linear"),      &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017"),             &BBGIOvD2017FormFactors_1polelambda<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1pole"),       &BBGIOvD2017FormFactors_1pole<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1polelambda"), &BBGIOvD2017FormFactors_1polelambda<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-constant"),    &BBGIOvD2017FormFactors_constant<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-linear"),      &BBGIOvD2017FormFactors_linear<LambdaBToLambdaC2625>::make },
         };
 
         /*

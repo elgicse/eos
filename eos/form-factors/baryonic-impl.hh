@@ -243,28 +243,149 @@ namespace eos
         static constexpr double mR2_1p = std::pow(mBc + 0.492, 2);
     };
 
-    template <typename Process_> class BBGIOvD2017FormFactors :
+    template <typename Process_> class BBGIOvD2017FormFactors_constant :
         public FormFactors<OneHalfPlusToThreeHalfMinus>
     {
         private:
-            static constexpr double _z(const double & t, const double & tp, const double & t0)
+
+        public:
+      BBGIOvD2017FormFactors_constant(const Parameters & p)
             {
-                return (std::sqrt(tp - t) - std::sqrt(tp - t0)) / (std::sqrt(tp - t) + std::sqrt(tp - t0));
             }
 
+            static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
+            {
+                return new BBGIOvD2017FormFactors_constant(parameters);
+            }
+
+            // vector current
+            virtual double f_time12_v(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_long12_v(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_perp12_v(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_perp32_v(const double & s) const
+            {
+                return 0.0;
+            }
+
+            // axial vector current
+            virtual double f_time12_a(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_long12_a(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_perp12_a(const double & s) const
+            {
+                return 1.0;
+            }
+
+            virtual double f_perp32_a(const double & s) const
+            {
+                return 0.0;
+            }
+    };
+
+
+    template <typename Process_> class BBGIOvD2017FormFactors_1pole :
+        public FormFactors<OneHalfPlusToThreeHalfMinus>
+    {
+        private:
+
+        public:
+      BBGIOvD2017FormFactors_1pole(const Parameters & p)
+            {
+            }
+
+            static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
+            {
+                return new BBGIOvD2017FormFactors_1pole(parameters);
+            }
+
+            // vector current
+            virtual double f_time12_v(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_0m;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_long12_v(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1p;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_perp12_v(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1p;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_perp32_v(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1p;
+                return 0.2 / (1.0 - s / mR2);
+            }
+
+            // axial vector current
+            virtual double f_time12_a(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_0p;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_long12_a(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1m;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_perp12_a(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1m;
+                return 1.0 / (1.0 - s / mR2);
+            }
+
+            virtual double f_perp32_a(const double & s) const
+            {
+                static const double mR2 = Process_::mR2_1m;
+                return 0.2 / (1.0 - s / mR2);
+            }
+    };
+
+
+    template <typename Process_> class BBGIOvD2017FormFactors_1polelambda :
+        public FormFactors<OneHalfPlusToThreeHalfMinus>
+    {
+        private:
             static constexpr double _lam(const double & mLb2, const double & mLcs2, const double & s)
             {
                 return std::sqrt(eos::lambda(mLb2, mLcs2, s)) / (mLb2 - mLcs2);
             }
 
         public:
-      BBGIOvD2017FormFactors(const Parameters & p)
+      BBGIOvD2017FormFactors_1polelambda(const Parameters & p)
             {
             }
 
             static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
             {
-                return new BBGIOvD2017FormFactors(parameters);
+                return new BBGIOvD2017FormFactors_1polelambda(parameters);
             }
 
             // vector current
@@ -329,6 +450,82 @@ namespace eos
                 return 0.2 / (1.0 - s / mR2);
             }
     };
+
+    template <typename Process_> class BBGIOvD2017FormFactors_linear :
+        public FormFactors<OneHalfPlusToThreeHalfMinus>
+    {
+        private:
+            static constexpr double mLb = Process_::m1;
+            static constexpr double mLcs = Process_::m2;
+            static constexpr double mLb2 = mLb * mLb;
+            static constexpr double mLcs2 = mLcs * mLcs;
+            static constexpr double s_max = (mLb - mLcs) * (mLb - mLcs);
+            static constexpr double _lam(const double & mLb2, const double & mLcs2, const double & s)
+            {
+                return std::sqrt(eos::lambda(mLb2, mLcs2, s)) / (mLb2 - mLcs2);
+            }
+            UsedParameter _rho;
+
+        public:
+      BBGIOvD2017FormFactors_linear(const Parameters & p) :
+        _rho(p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017"], *this)
+            {
+
+            }
+
+            static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
+            {
+                return new BBGIOvD2017FormFactors_linear(parameters);
+            }
+
+            // vector current
+            virtual double f_time12_v(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_long12_v(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_perp12_v(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_perp32_v(const double & s) const
+            {
+                return 0.0;
+            }
+
+            // axial vector current
+            virtual double f_time12_a(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_long12_a(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_perp12_a(const double & s) const
+            {
+                return _lam(mLb2, mLcs2, s) * (1.0 + _rho * (1.0 - s / s_max));
+            }
+
+            virtual double f_perp32_a(const double & s) const
+            {
+                return 0.0;
+            }
+    };
+
+
+
+
+
+
 }
 
 #endif
