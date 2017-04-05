@@ -592,7 +592,7 @@
     comments: ""
 
 # --fix Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017 value
-"Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017" :
+"Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-linear" :
     central: -0.05
     min:     -1.05
     max:     +1.05
