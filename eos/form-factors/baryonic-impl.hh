@@ -468,7 +468,7 @@ namespace eos
 
         public:
       BBGIOvD2017FormFactors_linear(const Parameters & p) :
-        _rho(p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017"], *this)
+        _rho(p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-linear"], *this)
             {
 
             }
