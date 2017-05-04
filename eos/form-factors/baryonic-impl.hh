@@ -521,6 +521,120 @@ namespace eos
             }
     };
 
+    template <typename Process_> class BBGIOvD2017FormFactors_HQT :
+        public FormFactors<OneHalfPlusToThreeHalfMinus>
+    {
+        private:
+            static constexpr double mLb = Process_::m1;
+            static constexpr double mLcs = Process_::m2;
+            static constexpr double mLb2 = mLb * mLb;
+            static constexpr double mLcs2 = mLcs * mLcs;
+            static constexpr double lambdabar = 1.0;
+            static constexpr double lambdabarprime = 1.0;
+            static constexpr double s_max = (mLb - mLcs) * (mLb - mLcs);
+            static constexpr double _zeta(const double & s, const double & s_max, const double & c, const double & rho)
+            {
+                return c + rho * (1.0 - s / s_max);
+            }
+            const double s_plus(const double & s)
+            {
+                return std::pow((mLb + mLcs), 2) - s;
+            }
+            const double s_minus(const double & s)
+            {
+                return std::pow((mLb - mLcs), 2) - s;
+            }
+
+            UsedParameter _rho, _rho3b, _c, _c3b;
+
+        public:
+      BBGIOvD2017FormFactors_HQT(const Parameters & p) :
+        _rho(   p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT"],   *this)
+        _rho3b( p["Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT"], *this)
+        _c(     p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"],     *this)
+        _c3b(   p["Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT"],   *this)
+            {
+
+            }
+
+            static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
+            {
+                return new BBGIOvD2017FormFactors_HQT(parameters);
+            }
+
+            // Isgur-Wise functions
+            virtual double _z(const double & s) const
+            {
+                return _zeta(s, s_max, _c, _rho);
+            }
+            virtual double _z3b(const double & s) const
+            {
+                return _zeta(s, s_max, _c3b, _rho3b);
+            }
+
+            // vector current
+            virtual double f_time12_v(const double & s) const
+            {
+                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_plus(s) + (lambdabar/(2.0*mLb) - lambdabarprime/(2.0*mLcs)) * (mLb+mLcs) * (mLb2-mLcs2-s) / (mLb-mLcs) ) * _z(s) 
+                        + _z3b(s) * (s_plus(s) + 2.0*s) / (mLb-mLcs) );
+                return res;
+            }
+
+            virtual double f_long12_v(const double & s) const
+            {
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_minus(s) + (lambdabar/(2.0*mLb) - lambdabarprime/(2.0*mLcs)) * (mLb-mLcs) * (mLb2-mLcs2-s) / (mLb+mLcs) ) * _z(s) 
+                        + _z3b(s) * (mLb2-mLcs2-s) / (mLb+mLcs) );
+                return res;
+            }
+
+            virtual double f_perp12_v(const double & s) const
+            {
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_minus(s) + lambdabar * (3.0*mLb2+mLcs2-s) / (2.0*mLb) - (mLb2+3.0*mLcs2-s) * lambdabarprime / (2.0*mLcs2) ) * _z(s)
+                        - mLcs * _z3b(s) );
+                return res;
+            }
+
+            virtual double f_perp32_v(const double & s) const
+            {
+                double res = -1.0 * std::sqrt(s_plus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs))
+                return res;
+            }
+
+            // axial vector current
+            virtual double f_time12_a(const double & s) const
+            {
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_minus(s) + ((mLb-mLcs) / (mLb+mLcs)) * (lambdabar*(mLb2-mLcs2+s)/(2.0*mLb) - lambdabarprime*(mLb2-mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
+                        + _z3b(s) * s_minus(s) / (mLb+mLcs) );
+                return res;
+            }
+
+            virtual double f_long12_a(const double & s) const
+            {
+                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_plus(s) + ((mLb-mLcs) / (mLb+mLcs)) * (lambdabar*(mLb2-mLcs2+s)/(2.0*mLb) - lambdabarprime*(mLb2-mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
+                        + _z3b(s) * (mLb2-mLcs2+s) / (mLb-mLcs) );
+                return res;
+            }
+
+            virtual double f_perp12_a(const double & s) const
+            {
+                double res = -1.0 * std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                res *= ( ( s_minus(s) + (lambdabar*(3.0*mLb2+mLcs2-s)/(2.0*mLb) - lambdabarprime*(mLb2+3.0*mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
+                        + _z3b(s) * mLcs );
+                return res;
+            }
+
+            virtual double f_perp32_a(const double & s) const
+            {
+                double res = -1.0 * std::sqrt(s_minus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs))
+                return res;
+            }
+    };
+
 
 
 
