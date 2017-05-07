@@ -96,9 +96,8 @@ namespace eos
         double b_l(const double & s) const
         {
             double val = 2. * (F12T(s) * F120(s) + G12T(s) * G120(s)) * pow(m_l, 2.) / s;
-            val *= (pow(m_Lambdab, 2.) - pow(m_Lambdac2625, 2.)) * sqrt(s_plus(s) * s_minus(s));
-            val += (-4.) * s * sqrt(s_plus(s) * s_minus(s)) * (F12P(s) * G12P(s) + 3. * F32P(s) * G32P(s));
-
+            val *= (pow(m_Lambdab, 2.) - pow(m_Lambdac2625, 2.));
+            val += (-4.) * s * (F12P(s) * G12P(s) + 3. * F32P(s) * G32P(s));
             return val;
         }
 
@@ -109,7 +108,6 @@ namespace eos
             val += pow(G120(s), 2.) * pow(m_Lambdab - m_Lambdac2625, 2.);
             val += (-1.) * s * (pow(G12P(s), 2.) + 3. * pow(G32P(s), 2.));
             val *= (-1.) * (1. - pow(m_l, 2.) / s);
-
             return val;
         }
 
