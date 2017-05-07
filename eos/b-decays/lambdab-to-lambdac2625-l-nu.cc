@@ -114,7 +114,7 @@ namespace eos
         {
             double val = pow(g_fermi, 2.) * sqrt(s_plus(s) * s_minus(s));
             val *= m_Lambdab * m_Lambdac2625;
-            val *= (1. / (96. * pow(M_PI * m_Lambdab, 3)));
+            val *= (1. / (96. * pow(M_PI * m_Lambdab, 3.)));
             val *= pow((1. - pow(m_l, 2.) / s), 2.);
             return val;
         }
@@ -129,14 +129,33 @@ namespace eos
             return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
         }
 
+        double normalized_double_differential_decay_width(const double & s, const double & theta_l) const
+        {
+            if (s < m_l * m_l)
+            {
+                return 0.0;
+            }
+            return gamma_0(s) * (a_l(s) + b_l(s) * cos(theta_l) + c_l(s) * pow(cos(theta_l), 2.));
+        }
+
         double differential_decay_width(const double & s) const
         {
             return normalized_differential_decay_width(s) * std::norm(model->ckm_cb());
         }
 
+        double double_differential_decay_width(const double & s, const double & theta_l) const
+        {
+            return normalized_double_differential_decay_width(s, theta_l) * std::norm(model->ckm_cb());
+        }
+
         double differential_branching_ratio(const double & s) const
         {
             return differential_decay_width(s) * tau_Lambdab / hbar;
+        }
+
+        double double_differential_branching_ratio(const double & s, const double & theta_l) const
+        {
+            return double_differential_decay_width(s, theta_l) * tau_Lambdab / hbar;
         }
     };
 
@@ -153,6 +172,12 @@ namespace eos
     LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio(const double & s) const
     {
         return _imp->differential_branching_ratio(s);
+    }
+
+    double
+    LambdabToLambdac2625LeptonNeutrino::double_differential_branching_ratio(const double & s, const double & theta_l) const
+    {
+        return _imp->double_differential_branching_ratio(s, theta_l);
     }
 
     double
