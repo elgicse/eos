@@ -236,4 +236,7 @@ The decay Lambda_b -> Lambda_c(2625) l nu, where l=e,mu,tau is a lepton.";
     LambdabToLambdac2625LeptonNeutrino::kinematics_description_s = "\
 The invariant mass of the l-nubar pair in GeV^2.";
 
+    const std::string
+    LambdabToLambdac2625LeptonNeutrino::kinematics_description_theta_l = "\
+The angle between the directions of the Lambda_c(2625) and of the l-nubar pair, in radians.";
 }

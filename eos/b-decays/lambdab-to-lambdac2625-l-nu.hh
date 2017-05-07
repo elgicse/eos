@@ -70,6 +70,7 @@ namespace eos
              */
             static const std::string description;
             static const std::string kinematics_description_s;
+            static const std::string kinematics_description_theta_l;
     };
 }
 
