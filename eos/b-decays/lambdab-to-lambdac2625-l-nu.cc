@@ -104,10 +104,10 @@ namespace eos
 
         double c_l(const double & s) const
         {
-            double val = pow(F120(s), 2.) * pow(m_Lambdab + m_Lambdac2625, 2.) * s_minus(s);
-            val += (-1.) * s * (pow(F12P(s), 2.) + 3. * pow(F32P(s), 2.)) * s_minus(s);
-            val += pow(G120(s), 2.) * pow(m_Lambdab - m_Lambdac2625, 2.) * s_plus(s);
-            val += (-1.) * s * (pow(G12P(s), 2.) + 3. * pow(G32P(s), 2.)) * s_plus(s);
+            double val = pow(F120(s), 2.) * pow(m_Lambdab + m_Lambdac2625, 2.);
+            val += (-1.) * s * (pow(F12P(s), 2.) + 3. * pow(F32P(s), 2.));
+            val += pow(G120(s), 2.) * pow(m_Lambdab - m_Lambdac2625, 2.);
+            val += (-1.) * s * (pow(G12P(s), 2.) + 3. * pow(G32P(s), 2.));
             val *= (-1.) * (1. - pow(m_l, 2.) / s);
 
             return val;
