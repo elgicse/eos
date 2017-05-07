@@ -529,8 +529,10 @@ namespace eos
             static constexpr double mLcs = Process_::m2;
             static constexpr double mLb2 = mLb * mLb;
             static constexpr double mLcs2 = mLcs * mLcs;
-            static constexpr double lambdabar = 1.0;
-            static constexpr double lambdabarprime = 1.0;
+            static constexpr double mBpole = 4.8;
+            static constexpr double mCpole = 1.4;
+            static constexpr double lambdabar = mLb - mBpole;
+            static constexpr double lambdabarprime = mLcs - mCpole;
             static constexpr double s_max = (mLb - mLcs) * (mLb - mLcs);
             static constexpr double _zeta(const double & s, const double & s_max, const double & c, const double & rho)
             {
