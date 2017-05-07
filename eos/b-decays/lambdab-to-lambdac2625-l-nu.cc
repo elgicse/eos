@@ -71,63 +71,43 @@ namespace eos
             u.uses(*model);
         }
 
+        double F12T(const double & s) const { return form_factors->f_time12_v(s); };
+        double F120(const double & s) const { return form_factors->f_long12_v(s); };
+        double F12P(const double & s) const { return form_factors->f_perp12_v(s); };
+        double F32P(const double & s) const { return form_factors->f_perp32_v(s); };
+        double G12T(const double & s) const { return form_factors->f_time12_a(s); };
+        double G120(const double & s) const { return form_factors->f_long12_a(s); };
+        double G12P(const double & s) const { return form_factors->f_perp12_a(s); };
+        double G32P(const double & s) const { return form_factors->f_perp32_a(s); };
+        double s_plus(const double & s) const { return pow((m_Lambdab + m_Lambdac2625), 2) - s; };
+        double s_minus(const double & s) const { return pow((m_Lambdab - m_Lambdac2625), 2) - s; };
+
         // [BBGIOvD] parametrization for the differential decay width
         double a_l(const double & s) const
         {
-            const auto F12T = form_factors->f_time12_v(s);
-            const auto F120 = form_factors->f_long12_v(s);
-            const auto F12P = form_factors->f_perp12_v(s);
-            const auto F32P = form_factors->f_perp32_v(s);
-            const auto G12T = form_factors->f_time12_a(s);
-            const auto G120 = form_factors->f_long12_a(s);
-            const auto G12P = form_factors->f_perp12_a(s);
-            const auto G32P = form_factors->f_perp32_a(s);
-            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2) - s;
-            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2) - s;
-
-            double val = pow(F12T, 2.) * (pow(m_l, 2.) / s) * pow((m_Lambdab - m_Lambdac2625), 2.) * s_plus;
-            val += (pow(F120, 2.) * pow((m_Lambdab + m_Lambdac2625), 2.) + (pow(F12P, 2.) + 3. * pow(F32P, 2.)) * (pow(m_l, 2.) + s)) * s_minus;
-            val += pow(G12T, 2.) * (pow(m_l, 2.) / s) * pow((m_Lambdab + m_Lambdac2625), 2.) * s_minus;
-            val += (pow(G120, 2.) * pow((m_Lambdab - m_Lambdac2625), 2.) + (pow(G12P, 2.) + 3. * pow(G32P, 2.)) * (pow(m_l, 2.) + s)) * s_plus;
+            double val = pow(F12T(s), 2.) * (pow(m_l, 2.) / s) * pow((m_Lambdab - m_Lambdac2625), 2.) * s_plus(s);
+            val += (pow(F120(s), 2.) * pow((m_Lambdab + m_Lambdac2625), 2.) + (pow(F12P(s), 2.) + 3. * pow(F32P(s), 2.)) * (pow(m_l, 2.) + s)) * s_minus(s);
+            val += pow(G12T(s), 2.) * (pow(m_l, 2.) / s) * pow((m_Lambdab + m_Lambdac2625), 2.) * s_minus(s);
+            val += (pow(G120(s), 2.) * pow((m_Lambdab - m_Lambdac2625), 2.) + (pow(G12P(s), 2.) + 3. * pow(G32P(s), 2.)) * (pow(m_l, 2.) + s)) * s_plus(s);
 
             return val;
         }
 
         double b_l(const double & s) const
         {
-            const auto F12T = form_factors->f_time12_v(s);
-            const auto F120 = form_factors->f_long12_v(s);
-            const auto F12P = form_factors->f_perp12_v(s);
-            const auto F32P = form_factors->f_perp32_v(s);
-            const auto G12T = form_factors->f_time12_a(s);
-            const auto G120 = form_factors->f_long12_a(s);
-            const auto G12P = form_factors->f_perp12_a(s);
-            const auto G32P = form_factors->f_perp32_a(s);
-            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2.) - s;
-            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2.) - s;
-
-            double val = 2. * (F12T * F120 + G12T * G120) * pow(m_l, 2.) / s;
-            val *= (pow(m_Lambdab, 2.) - pow(m_Lambdac2625, 2.)) * sqrt(s_plus * s_minus);
-            val += (-4.) * s * sqrt(s_plus * s_minus) * (F12P * G12P + 3. * F32P * G32P);
+            double val = 2. * (F12T(s) * F120(s) + G12T(s) * G120(s)) * pow(m_l, 2.) / s;
+            val *= (pow(m_Lambdab, 2.) - pow(m_Lambdac2625, 2.)) * sqrt(s_plus(s) * s_minus(s));
+            val += (-4.) * s * sqrt(s_plus(s) * s_minus(s)) * (F12P(s) * G12P(s) + 3. * F32P(s) * G32P(s));
 
             return val;
         }
 
         double c_l(const double & s) const
         {
-            const auto F120 = form_factors->f_long12_v(s);
-            const auto F12P = form_factors->f_perp12_v(s);
-            const auto F32P = form_factors->f_perp32_v(s);
-            const auto G120 = form_factors->f_long12_a(s);
-            const auto G12P = form_factors->f_perp12_a(s);
-            const auto G32P = form_factors->f_perp32_a(s);
-            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2.) - s;
-            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2.) - s;
-
-            double val = pow(F120, 2.) * pow(m_Lambdab + m_Lambdac2625, 2.) * s_minus;
-            val += (-1.) * s * (pow(F12P, 2.) + 3. * pow(F32P, 2.)) * s_minus;
-            val += pow(G120, 2.) * pow(m_Lambdab - m_Lambdac2625, 2.) * s_plus;
-            val += (-1.) * s * (pow(G12P, 2.) + 3. * pow(G32P, 2.)) * s_plus;
+            double val = pow(F120(s), 2.) * pow(m_Lambdab + m_Lambdac2625, 2.) * s_minus(s);
+            val += (-1.) * s * (pow(F12P(s), 2.) + 3. * pow(F32P(s), 2.)) * s_minus(s);
+            val += pow(G120(s), 2.) * pow(m_Lambdab - m_Lambdac2625, 2.) * s_plus(s);
+            val += (-1.) * s * (pow(G12P(s), 2.) + 3. * pow(G32P(s), 2.)) * s_plus(s);
             val *= (-1.) * (1. - pow(m_l, 2.) / s);
 
             return val;
@@ -135,15 +115,12 @@ namespace eos
 
         double gamma_0(const double & s) const
         {
-            const double s_plus = pow((m_Lambdab + m_Lambdac2625), 2.) - s;
-            const double s_minus = pow((m_Lambdab - m_Lambdac2625), 2.) - s;
-
-            double val = pow(g_fermi, 2.) * sqrt(s_plus * s_minus);
+            double val = pow(g_fermi, 2.) * sqrt(s_plus(s) * s_minus(s));
             val *= (1. / (384. * pow(M_PI * m_Lambdab, 3)));
             val *= pow((1. - pow(m_l, 2.) / s), 2.);
             // Correct normalization
             // Allows to remove sqrt(lambda) from the form factors
-            val *= ((s_plus * s_minus) / (m_Lambdab * m_Lambdab * m_Lambdac2625 * m_Lambdac2625));
+            val *= ((s_plus(s) * s_minus(s)) / (m_Lambdab * m_Lambdab * m_Lambdac2625 * m_Lambdac2625));
             return val;
         }
 

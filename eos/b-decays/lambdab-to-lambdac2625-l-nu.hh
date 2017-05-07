@@ -38,6 +38,17 @@ namespace eos
             ~LambdabToLambdac2625LeptonNeutrino();
 
             // [BBGIOvD] parametrization for the differential decay width
+            double F12T(const double & s) const;
+            double F120(const double & s) const;
+            double F12P(const double & s) const;
+            double F32P(const double & s) const;
+            double G12T(const double & s) const;
+            double G120(const double & s) const;
+            double G12P(const double & s) const;
+            double G32P(const double & s) const;
+            double s_plus(const double & s) const;
+            double s_minus(const double & s) const;
+            
             double a_l(const double & s) const;
             double b_l(const double & s) const;
             double c_l(const double & s) const;
