@@ -538,11 +538,11 @@ namespace eos
             {
                 return c + rho * (1.0 - s / s_max);
             }
-            const double s_plus(const double & s)
+            static constexpr double s_plus(const double & s)
             {
                 return std::pow((mLb + mLcs), 2) - s;
             }
-            const double s_minus(const double & s)
+            static constexpr double s_minus(const double & s)
             {
                 return std::pow((mLb - mLcs), 2) - s;
             }
@@ -551,9 +551,9 @@ namespace eos
 
         public:
       BBGIOvD2017FormFactors_HQT(const Parameters & p) :
-        _rho(   p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT"],   *this)
-        _rho3b( p["Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT"], *this)
-        _c(     p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"],     *this)
+        _rho(   p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT"],   *this),
+        _rho3b( p["Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT"], *this),
+        _c(     p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"],     *this),
         _c3b(   p["Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT"],   *this)
             {
 
@@ -577,7 +577,7 @@ namespace eos
             // vector current
             virtual double f_time12_v(const double & s) const
             {
-                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_plus(s) + (lambdabar/(2.0*mLb) - lambdabarprime/(2.0*mLcs)) * (mLb+mLcs) * (mLb2-mLcs2-s) / (mLb-mLcs) ) * _z(s) 
                         + _z3b(s) * (s_plus(s) + 2.0*s) / (mLb-mLcs) );
                 return res;
@@ -585,7 +585,7 @@ namespace eos
 
             virtual double f_long12_v(const double & s) const
             {
-                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_minus(s) + (lambdabar/(2.0*mLb) - lambdabarprime/(2.0*mLcs)) * (mLb-mLcs) * (mLb2-mLcs2-s) / (mLb+mLcs) ) * _z(s) 
                         + _z3b(s) * (mLb2-mLcs2-s) / (mLb+mLcs) );
                 return res;
@@ -593,7 +593,7 @@ namespace eos
 
             virtual double f_perp12_v(const double & s) const
             {
-                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_minus(s) + lambdabar * (3.0*mLb2+mLcs2-s) / (2.0*mLb) - (mLb2+3.0*mLcs2-s) * lambdabarprime / (2.0*mLcs2) ) * _z(s)
                         - mLcs * _z3b(s) );
                 return res;
@@ -601,14 +601,14 @@ namespace eos
 
             virtual double f_perp32_v(const double & s) const
             {
-                double res = -1.0 * std::sqrt(s_plus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs))
+                double res = -1.0 * std::sqrt(s_plus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs));
                 return res;
             }
 
             // axial vector current
             virtual double f_time12_a(const double & s) const
             {
-                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_minus(s) + ((mLb-mLcs) / (mLb+mLcs)) * (lambdabar*(mLb2-mLcs2+s)/(2.0*mLb) - lambdabarprime*(mLb2-mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
                         + _z3b(s) * s_minus(s) / (mLb+mLcs) );
                 return res;
@@ -616,7 +616,7 @@ namespace eos
 
             virtual double f_long12_a(const double & s) const
             {
-                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = std::sqrt(s_minus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_plus(s) + ((mLb-mLcs) / (mLb+mLcs)) * (lambdabar*(mLb2-mLcs2+s)/(2.0*mLb) - lambdabarprime*(mLb2-mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
                         + _z3b(s) * (mLb2-mLcs2+s) / (mLb-mLcs) );
                 return res;
@@ -624,7 +624,7 @@ namespace eos
 
             virtual double f_perp12_a(const double & s) const
             {
-                double res = -1.0 * std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs), 3.0 / 2.0);
+                double res = -1.0 * std::sqrt(s_plus(s)) / (2.0 * std::pow(mLb * mLcs, 3.0 / 2.0));
                 res *= ( ( s_minus(s) + (lambdabar*(3.0*mLb2+mLcs2-s)/(2.0*mLb) - lambdabarprime*(mLb2+3.0*mLcs2-s)/(2.0*mLcs)) ) * _z(s) 
                         + _z3b(s) * mLcs );
                 return res;
@@ -632,7 +632,7 @@ namespace eos
 
             virtual double f_perp32_a(const double & s) const
             {
-                double res = -1.0 * std::sqrt(s_minus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs))
+                double res = -1.0 * std::sqrt(s_minus(s)) * _z3b(s) / (2.0 * std::pow(mLb, 3.0/2.0) * std::sqrt(mLcs));
                 return res;
             }
     };
