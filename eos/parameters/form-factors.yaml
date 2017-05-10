@@ -598,26 +598,26 @@
     max:     +1.05
     comments: "Slope of the LO IW function, [-1.0, 1.0]"
 
-# Initial parameters for Lambda_b->Lambda_c(2625)@BBGIOvD2017
+# Initial parameters for Lambda_b->Lambda_c(2625)@BBGIOvD2017-HQT
 "Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT" :
-    central: -0.05
+    central: 0.05
     min:     -1.05
     max:     +1.05
     comments: "Slope of the LO IW function, [-1.0, 1.0]"
 "Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT" :
-    central: -0.05
+    central: 0.05
     min:     -1.05
     max:     +1.05
     comments: "Slope of the NLO IW function, [-1.0, 1.0]"
 "Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT" :
-    central: 1.0
-    min:     -10.0
-    max:     +10.0
+    central: 0.013054
+    min:     0.000537
+    max:     0.023296
     comments: "Constant of the LO IW function, [-1.0, 1.0]"
 "Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT" :
-    central: 1.0
-    min:     -10.0
-    max:     +10.0
+    central: 0.007087
+    min:     0.000384
+    max:     0.013604
     comments: "Constant of the NLO IW function, [-1.0, 1.0]"
 
 # subleading parameter for Lambda_b -> Lambda ll decays according to
