@@ -592,11 +592,26 @@
     comments: ""
 
 # --fix Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017 value
-"Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-linear" :
+"Lambda_b->Lambda_c^*::zeta(1)@BBGIOvD2017" :
+    central: +0.05
+    min:     +0.00
+    max:     +1.00
+    comments: "Normalization of the LO IW function at omega = 1"
+"Lambda_b->Lambda_c^*::rho_zeta@BBGIOvD2017" :
     central: -0.05
-    min:     -1.05
-    max:     +1.05
-    comments: "Slope of the LO IW function, [-1.0, 1.0]"
+    min:     -1.00
+    max:     +1.00
+    comments: "Slope of the LO IW function at omega = 1"
+"Lambda_b->Lambda_c^*::zeta3b(1)@BBGIOvD2017" :
+    central: +0.05
+    min:     +0.00
+    max:     +1.00
+    comments: "Normalization of the NLO IW function at omega = 1"
+"Lambda_b->Lambda_c^*::rho_zeta3b@BBGIOvD2017" :
+    central: -0.05
+    min:     -1.00
+    max:     +1.00
+    comments: "Slope of the NLO IW function at omega = 1"
 
 # Initial parameters for Lambda_b->Lambda_c(2625)@BBGIOvD2017-HQT
 "Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT" :
