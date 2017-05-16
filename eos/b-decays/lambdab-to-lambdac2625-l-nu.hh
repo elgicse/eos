@@ -2,6 +2,7 @@
 
 /*
  * Copyright (c) 2017 Elena Graverini
+ * Copyright (c) 2017 Danny van Dyk
  *
  * This file is part of the EOS project. EOS is free software;
  * you can redistribute it and/or modify it under the terms of the GNU General
@@ -64,6 +65,10 @@ namespace eos
             // R_Lambda_c_2625
             double differential_r_lambdac2625(const double & s) const;
             double integrated_r_lambdac2625() const;
+
+            // Zero-Recoil Sum Rule
+            double f_inel() const;
+            double g_inel() const;
 
             /*!
              * Descriptions of the process and its kinematics.
