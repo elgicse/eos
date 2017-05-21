@@ -136,13 +136,14 @@ namespace eos
             return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
         }
 
-        double normalized_double_differential_decay_width(const double & s, const double & theta_l) const
+        double normalized_double_differential_decay_width(const double & s, const double & z) const
         {
             if ((s < m_l * m_l) || (lambda(s) < 0.0))
             {
                 return 0.0;
             }
-            return gamma_0(s) * (a_l(s) + b_l(s) * cos(theta_l) + c_l(s) * pow(cos(theta_l), 2.));
+
+            return gamma_0(s) * (a_l(s) + b_l(s) * z + c_l(s) * pow(z, 2.));
         }
 
         double differential_decay_width(const double & s) const
@@ -274,6 +275,6 @@ The decay Lambda_b -> Lambda_c(2625) l nu, where l=e,mu,tau is a lepton.";
 The invariant mass of the l-nubar pair in GeV^2.";
 
     const std::string
-    LambdabToLambdac2625LeptonNeutrino::kinematics_description_theta_l = "\
-The angle between the directions of the Lambda_c(2625) and of the l-nubar pair, in radians.";
+    LambdabToLambdac2625LeptonNeutrino::kinematics_description_c_theta_l = "\
+The cosine of the helicity angle between the direction of flight of the muon and of the Lambda_c(2625) in the l-nubar rest frame.";
 }
