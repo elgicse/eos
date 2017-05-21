@@ -49,7 +49,7 @@ namespace eos
             double G32P(const double & s) const;
             double s_plus(const double & s) const;
             double s_minus(const double & s) const;
-            
+
             double a_l(const double & s) const;
             double b_l(const double & s) const;
             double c_l(const double & s) const;
@@ -75,7 +75,7 @@ namespace eos
              */
             static const std::string description;
             static const std::string kinematics_description_s;
-            static const std::string kinematics_description_theta_l;
+            static const std::string kinematics_description_c_theta_l;
     };
 }
 
