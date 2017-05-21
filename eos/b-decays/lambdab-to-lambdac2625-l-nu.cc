@@ -120,19 +120,25 @@ namespace eos
             return val;
         }
 
+        inline double lambda(const double & s) const
+        {
+            return s_plus(s) * s_minus(s);
+        }
+
         // normalized to V_cb = 1
         double normalized_differential_decay_width(const double & s) const
         {
-            if (s < m_l * m_l)
+            if ((s < m_l * m_l) || (lambda(s) < 0.0))
             {
                 return 0.0;
             }
+
             return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
         }
 
         double normalized_double_differential_decay_width(const double & s, const double & theta_l) const
         {
-            if (s < m_l * m_l)
+            if ((s < m_l * m_l) || (lambda(s) < 0.0))
             {
                 return 0.0;
             }
