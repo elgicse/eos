@@ -166,6 +166,14 @@ namespace eos
             return double_differential_decay_width(s, theta_l) * tau_Lambdab / hbar;
         }
 
+        double integrated_branching_ratio(const double & s_min, const double & s_max) const
+        {
+            std::function<double (const double &)> f = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::differential_branching_ratio,
+                    *this, std::placeholders::_1);
+
+            return integrate(f, 128, s_min, s_max);
+        }
+
         double f_inel() const
         {
             const double r = pow((m_Lambdab + m_Lambdac2625) / (m_Lambdab - m_Lambdac2625), 2);
@@ -209,10 +217,16 @@ namespace eos
     double
     LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio(const double & s_min, const double & s_max) const
     {
-        std::function<double (const double &)> f = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::differential_branching_ratio,
-                _imp.get(), std::placeholders::_1);
+        return _imp->integrated_branching_ratio(s_min, s_max);
+    }
 
-        return integrate(f, 128, s_min, s_max);
+    double
+    LambdabToLambdac2625LeptonNeutrino::normalized_integrated_branching_ratio(const double & s_min, const double & s_max) const
+    {
+        const double abs_s_min = pow(_imp->m_l, 2);
+        const double abs_s_max = pow(_imp->m_Lambdab - _imp->m_Lambdac2625, 2);
+
+        return _imp->integrated_branching_ratio(s_min, s_max) / _imp->integrated_branching_ratio(abs_s_min, abs_s_max);
     }
 
     double
