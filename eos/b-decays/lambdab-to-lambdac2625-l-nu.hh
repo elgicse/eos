@@ -49,7 +49,7 @@ namespace eos
             double G32P(const double & s) const;
             double s_plus(const double & s) const;
             double s_minus(const double & s) const;
-            
+
             double a_l(const double & s) const;
             double b_l(const double & s) const;
             double c_l(const double & s) const;
@@ -61,6 +61,9 @@ namespace eos
 
             // Integrated Observables
             double integrated_branching_ratio(const double & s_min, const double & s_max) const;
+
+            // Integrated Observables (normalized to 1)
+            double normalized_integrated_branching_ratio(const double & s_min, const double & s_max) const;
 
             // R_Lambda_c_2625
             double differential_r_lambdac2625(const double & s) const;
@@ -75,7 +78,7 @@ namespace eos
              */
             static const std::string description;
             static const std::string kinematics_description_s;
-            static const std::string kinematics_description_theta_l;
+            static const std::string kinematics_description_c_theta_l;
     };
 }
 

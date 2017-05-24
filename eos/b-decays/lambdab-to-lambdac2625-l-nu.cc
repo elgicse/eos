@@ -120,23 +120,30 @@ namespace eos
             return val;
         }
 
+        inline double lambda(const double & s) const
+        {
+            return s_plus(s) * s_minus(s);
+        }
+
         // normalized to V_cb = 1
         double normalized_differential_decay_width(const double & s) const
         {
-            if (s < m_l * m_l)
+            if ((s < m_l * m_l) || (lambda(s) < 0.0))
             {
                 return 0.0;
             }
+
             return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
         }
 
-        double normalized_double_differential_decay_width(const double & s, const double & theta_l) const
+        double normalized_double_differential_decay_width(const double & s, const double & z) const
         {
-            if (s < m_l * m_l)
+            if ((s < m_l * m_l) || (lambda(s) < 0.0))
             {
                 return 0.0;
             }
-            return gamma_0(s) * (a_l(s) + b_l(s) * cos(theta_l) + c_l(s) * pow(cos(theta_l), 2.));
+
+            return gamma_0(s) * (a_l(s) + b_l(s) * z + c_l(s) * pow(z, 2.));
         }
 
         double differential_decay_width(const double & s) const
@@ -157,6 +164,14 @@ namespace eos
         double double_differential_branching_ratio(const double & s, const double & theta_l) const
         {
             return double_differential_decay_width(s, theta_l) * tau_Lambdab / hbar;
+        }
+
+        double integrated_branching_ratio(const double & s_min, const double & s_max) const
+        {
+            std::function<double (const double &)> f = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::differential_branching_ratio,
+                    *this, std::placeholders::_1);
+
+            return integrate(f, 128, s_min, s_max);
         }
 
         double f_inel() const
@@ -202,10 +217,16 @@ namespace eos
     double
     LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio(const double & s_min, const double & s_max) const
     {
-        std::function<double (const double &)> f = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::differential_branching_ratio,
-                _imp.get(), std::placeholders::_1);
+        return _imp->integrated_branching_ratio(s_min, s_max);
+    }
 
-        return integrate(f, 128, s_min, s_max);
+    double
+    LambdabToLambdac2625LeptonNeutrino::normalized_integrated_branching_ratio(const double & s_min, const double & s_max) const
+    {
+        const double abs_s_min = pow(_imp->m_l, 2);
+        const double abs_s_max = pow(_imp->m_Lambdab - _imp->m_Lambdac2625, 2);
+
+        return _imp->integrated_branching_ratio(s_min, s_max) / _imp->integrated_branching_ratio(abs_s_min, abs_s_max);
     }
 
     double
@@ -268,6 +289,6 @@ The decay Lambda_b -> Lambda_c(2625) l nu, where l=e,mu,tau is a lepton.";
 The invariant mass of the l-nubar pair in GeV^2.";
 
     const std::string
-    LambdabToLambdac2625LeptonNeutrino::kinematics_description_theta_l = "\
-The angle between the directions of the Lambda_c(2625) and of the l-nubar pair, in radians.";
+    LambdabToLambdac2625LeptonNeutrino::kinematics_description_c_theta_l = "\
+The cosine of the helicity angle between the direction of flight of the muon and of the Lambda_c(2625) in the l-nubar rest frame.";
 }
