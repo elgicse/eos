@@ -601,7 +601,7 @@ namespace eos
 
                 double result = C_1 + sp * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb + mLcs));
                 result *= sm;
-                result += (mLb - mLcs) / (mLb + mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLcs) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
+                result += (mLb - mLcs) / (mLb + mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLb) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
                 result *= _z(s);
                 result += (mLb2 - mLcs2 - s) / (mLb + mLcs) * _z3b(s);
                 result *= 0.5 * sqrt(sp / pow(mLb * mLcs, 3));
@@ -671,7 +671,7 @@ namespace eos
 
                 double result = C_1 - sm * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb - mLcs));
                 result *= sp;
-                result += (mLb + mLcs) / (mLb - mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLcs) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
+                result += (mLb + mLcs) / (mLb - mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLb) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
                 result *= _z(s);
                 result += (mLb2 - mLcs2 + s) / (mLb - mLcs) * _z3b(s);
                 result *= 0.5 * sqrt(sm / pow(mLb * mLcs, 3));
