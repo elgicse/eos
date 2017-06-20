@@ -304,6 +304,16 @@ namespace eos
                 if (omega < 1.0)
                     throw InternalError("BBGIOvD2017FormFactorsHQET::r omega = '" + stringify(omega) + "' outside its domain of validity");
 
+                // for small omega - 1, taylor expand r up to second order
+                if ((omega - 1.0) < 1.0e-5)
+                {
+                    const double c0 = +1.0;
+                    const double c1 = -1.0 / 3.0;
+                    const double c2 = +4.0 / 30.0;
+
+                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
+                }
+
                 return log(omega + sqrt(omega * omega - 1.0)) / sqrt(omega * omega - 1.0);
             }
 
@@ -312,6 +322,16 @@ namespace eos
             {
                 if (omega < 1.0)
                     throw InternalError("BBGIOvD2017FormFactorsHQET::f omega = '" + stringify(omega) + "' outside its domain of validity");
+
+                // for small omega - 1, taylor expand f up to second order
+                if ((omega - 1.0) < 1.0e-5)
+                {
+                    const double c0 = -3.0;
+                    const double c1 = -10.0 / 9.0;
+                    const double c2 = +2.0 / 150.0;
+
+                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
+                }
 
                 const double omega_m = omega - sqrt(omega * omega - 1.0);
                 const double L2      = real(dilog(complex<double>(1.0 - omega_m * omega_m, 0.0)));
@@ -325,6 +345,16 @@ namespace eos
             {
                 if (omega < 1.0)
                     throw InternalError("BBGIOvD2017FormFactorsHQET::g omega = '" + stringify(omega) + "' outside its domain of validity");
+
+                // for small omega - 1, taylor expand g up to second order
+                if ((omega - 1.0) < 1.0e-5)
+                {
+                    const double c0 = z * log(z) / (z - 1.0);
+                    const double c1 = z * (2.0 - 2.0 * z + (1.0 + z) * log(z)) / pow(z - 1.0, 3);
+                    const double c2 = z * (1.0 + 9.0 * z - 9.0 * z * z - z * z + z + 6.0 * z * (1.0 + z) * log(z)) / (3.0 * pow(z - 1.0, 5));
+
+                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
+                }
 
                 const double omega_m = omega - sqrt(omega * omega - 1.0);
                 const double omega_p = omega + sqrt(omega * omega - 1.0);
