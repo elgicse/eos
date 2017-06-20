@@ -1,7 +1,7 @@
 /* vim: set sw=4 sts=4 et foldmethod=syntax : */
 
 /*
- * Copyright (c) 2014-2016 Danny van Dyk
+ * Copyright (c) 2014-2017 Danny van Dyk
  *
  * This file is part of the EOS project. EOS is free software;
  * you can redistribute it and/or modify it under the terms of the GNU General
@@ -190,21 +190,9 @@ namespace eos
         typedef std::tuple<std::string, std::string> KeyType;
         typedef std::function<FormFactors<OneHalfPlusToThreeHalfMinus> * (const Parameters &, unsigned)> ValueType;
 
-        /*
-         * Mapping of the different implementations
-         * of the Lambda_b->Lambda_c(2625) l nu form factors
-         *
-         */
-
         static const std::map<KeyType, ValueType> form_factors
         {
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017"),             &BBGIOvD2017FormFactors_HQT<LambdaBToLambdaC2625>::make },
-            // { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017"),             &BBGIOvD2017FormFactors_linear<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1pole"),       &BBGIOvD2017FormFactors_1pole<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-1polelambda"), &BBGIOvD2017FormFactors_1polelambda<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-constant"),    &BBGIOvD2017FormFactors_constant<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-linear"),      &BBGIOvD2017FormFactors_linear<LambdaBToLambdaC2625>::make },
-            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017-HQT"),         &BBGIOvD2017FormFactors_HQT<LambdaBToLambdaC2625>::make },
+            { KeyType("Lambda_b->Lambda_c(2625)", "BBGIOvD2017"),             &BBGIOvD2017FormFactors<LambdaBToLambdaC2625>::make },
         };
 
         /*
