@@ -461,8 +461,7 @@ namespace eos
                 const double alpha_s_m  = _model->alpha_s(mu_match());
                 const double x          = alpha_s_mc / alpha_s_mb;
                 const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2(z, omega);
-                const double h1         = h2 - 2.0 * r(omega) + 1.0;
+                const double h1         = h_2(1.0 / z, omega) - 2.0 * r(omega) + 1.0;
                 const double H1         = h1 - (3.0 - 2.0 * omega) * z * log(z);
 
                 return A(omega) * (
@@ -511,8 +510,7 @@ namespace eos
                 const double alpha_s_m  = _model->alpha_s(mu_match());
                 const double x          = alpha_s_mc / alpha_s_mb;
                 const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2_5(z, omega);
-                const double h1         = h2 - 2.0 * r(omega) - 1.0;
+                const double h1         = h_2_5(1.0 / z, omega) - 2.0 * r(omega) - 1.0;
                 const double H1         = h1 - (3.0 + 2.0 * omega) * z * log(z);
 
                 return A(omega) * (
