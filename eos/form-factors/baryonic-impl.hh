@@ -370,7 +370,7 @@ namespace eos
             }
             inline static double S_2_5(const double & x, const double & omega)
             {
-                return -omega * (14.0 / 27.0 + 10.0 / 9.0 * pow(x, -6.0 / 25.0) - 44.0 / 27.0 * pow(x, -9.0 / 25.0))
+                return +omega * (14.0 / 27.0 + 10.0 / 9.0 * pow(x, -6.0 / 25.0) - 44.0 / 27.0 * pow(x, -9.0 / 25.0))
                     + (2.0 / 3.0 + 5.0 / 9.0 * pow(x, -6.0 / 25.0) + 2.0 / 9.0 * pow(x, -9.0 / 25.0) - 13.0 / 9.0 * pow(x, -12.0 / 25.0));
             }
             inline static double S_3(const double & x)
@@ -408,7 +408,7 @@ namespace eos
                 return pow(alpha_s_mc / alpha_s_mb, 6.0 / 25.0) * pow(alpha_s_mc, a_hh(omega));
             }
 
-            // h_2(z, omega) is defined in [N1993] eq. (3.130), p. 70
+            // h_2(z, omega) is defined in [N1993] eq. (3.129), p. 70
             inline static double h_2(const double & z, const double & omega)
             {
                 const double denom = 1.0 - 2.0 * omega * z + z * z;
@@ -420,6 +420,19 @@ namespace eos
                             + (5.0 * omega + 2.0 * omega * omega - 1.0) * z * z - 2.0 * z * z * z
                         ) * r(omega)
                     ) - z / denom * (log(z) - 1.0 + z);
+            }
+            // h_2_5(z, omega) is defined in [N1993] eq. (3.129), p. 70
+            inline static double h_2_5(const double & z, const double & omega)
+            {
+                const double denom = 1.0 - 2.0 * omega * z + z * z;
+
+                return z / pow(denom, 2) * (
+                        2.0 * (omega + 1.0) * z * (1.0 - z) * log(z)
+                        - (
+                            (omega - 1.0) - 2.0 * omega * (2.0 * omega - 1.0) * z
+                            + (5.0 * omega - 2.0 * omega * omega + 1.0) * z * z - 2.0 * z * z * z
+                        ) * r(omega)
+                    ) - z / denom * (log(z) - 1.0 - z);
             }
 
             // hatted Wilson coefficients without the universal mu-dependence,
@@ -498,9 +511,9 @@ namespace eos
                 const double alpha_s_m  = _model->alpha_s(mu_match());
                 const double x          = alpha_s_mc / alpha_s_mb;
                 const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2(z, omega);
-                const double h1         = h2 - 2.0 * r(omega) + 1.0;
-                const double H1         = h1 - (3.0 - 2.0 * omega) * z * log(z);
+                const double h2         = h_2_5(z, omega);
+                const double h1         = h2 - 2.0 * r(omega) - 1.0;
+                const double H1         = h1 - (3.0 + 2.0 * omega) * z * log(z);
 
                 return A(omega) * (
                     - 2.0 * alpha_s_mb / (3.0 * M_PI)
@@ -516,7 +529,7 @@ namespace eos
                 const double alpha_s_m  = _model->alpha_s(mu_match());
                 const double x          = alpha_s_mc / alpha_s_mb;
                 const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2(z, omega);
+                const double h2         = h_2_5(z, omega);
                 const double H2         = h2 + z * log(z);
 
                 return +A(omega) * (
