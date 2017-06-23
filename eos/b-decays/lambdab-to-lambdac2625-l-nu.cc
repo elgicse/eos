@@ -133,7 +133,17 @@ namespace eos
                 return 0.0;
             }
 
-            return gamma_0(s) * 2. * (a_l(s) + c_l(s) / 3.);
+            return 2. * gamma_0(s) * (a_l(s) + c_l(s) / 3.);
+        }
+
+        double normalized_differential_forward_backward_asymmetry(const double & s) const
+        {
+            if ((s < m_l * m_l) || (lambda(s) < 0.0))
+            {
+                return 0.0;
+            }
+
+            return gamma_0(s) * c_l(s);
         }
 
         double normalized_double_differential_decay_width(const double & s, const double & z) const
@@ -172,6 +182,16 @@ namespace eos
                     *this, std::placeholders::_1);
 
             return integrate(f, 128, s_min, s_max);
+        }
+
+        double integrated_forward_backward_asymmetry(const double & s_min, const double & s_max) const
+        {
+            std::function<double (const double &)> numerator   = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::normalized_differential_forward_backward_asymmetry,
+                    *this, std::placeholders::_1);
+            std::function<double (const double &)> denominator = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::normalized_differential_decay_width,
+                    *this, std::placeholders::_1);
+
+            return integrate(numerator, 128, s_min, s_max) / integrate(denominator, 128, s_min, s_max);
         }
 
         double f_inel() const
@@ -218,6 +238,12 @@ namespace eos
     LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio(const double & s_min, const double & s_max) const
     {
         return _imp->integrated_branching_ratio(s_min, s_max);
+    }
+
+    double
+    LambdabToLambdac2625LeptonNeutrino::integrated_forward_backward_asymmetry(const double & s_min, const double & s_max) const
+    {
+        return _imp->integrated_forward_backward_asymmetry(s_min, s_max);
     }
 
     double

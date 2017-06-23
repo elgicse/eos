@@ -544,6 +544,10 @@ namespace eos
                             &LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio,
                             std::make_tuple("s_min", "s_max")),
 
+            make_observable("Lambda_b->Lambda_c(2625)lnu::A_FB",
+                            &LambdabToLambdac2625LeptonNeutrino::integrated_forward_backward_asymmetry,
+                            std::make_tuple("s_min", "s_max")),
+
             make_observable("Lambda_b->Lambda_c(2625)lnu::Gamma_normalized(s_min,s_max)",
                             &LambdabToLambdac2625LeptonNeutrino::normalized_integrated_branching_ratio,
                             std::make_tuple("s_min", "s_max")),
