@@ -10,6 +10,7 @@ libeosformfactors_la_SOURCES = \
 	baryonic.cc baryonic.hh baryonic-impl.hh \
 	form-factor-adapter.hh \
 	form-factors.cc form-factors.hh form-factors-fwd.hh \
+	hqet-b-to-c.hh hqet-b-to-c.cc \
 	mesonic.cc mesonic.hh mesonic-impl.hh \
 	pi-lcdas.cc pi-lcdas.hh \
 	zero-recoil-sum-rule.cc zero-recoil-sum-rule.hh

@@ -272,11 +272,11 @@ namespace eos
             make_observable("Lambda_b->Lambda_c::G(1)",
                     &ZeroRecoilSumRule<LambdaBToC>::axialvector_current),
 
-            make_observable("Lambda_b->Lambda_c(2625)::F_inel(1)",
-                    &LambdabToLambdac2625LeptonNeutrino::f_inel),
+            make_observable("Lambda_b->Lambda_c::F_inel(1)",
+                    &ZeroRecoilSumRule<LambdaBToC>::vector_current_inel),
 
-            make_observable("Lambda_b->Lambda_c(2625)::G_inel(1)",
-                    &LambdabToLambdac2625LeptonNeutrino::g_inel),
+            make_observable("Lambda_b->Lambda_c::G_inel(1)",
+                    &ZeroRecoilSumRule<LambdaBToC>::axialvector_current_inel),
 
             /* Exclusive Decays */
 

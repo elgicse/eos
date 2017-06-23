@@ -27,7 +27,6 @@
 #include <eos/utils/model.hh>
 #include <eos/utils/options.hh>
 #include <eos/utils/power_of.hh>
-#include <eos/utils/polylog.hh>
 
 namespace eos
 {

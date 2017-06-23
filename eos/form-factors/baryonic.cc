@@ -227,6 +227,4 @@ namespace eos
 
         return result;
     }
-
-
 }

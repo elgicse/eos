@@ -193,24 +193,6 @@ namespace eos
 
             return integrate(numerator, 128, s_min, s_max) / integrate(denominator, 128, s_min, s_max);
         }
-
-        double f_inel() const
-        {
-            const double r = pow((m_Lambdab + m_Lambdac2625) / (m_Lambdab - m_Lambdac2625), 2);
-            const double q2max = pow(m_Lambdab - m_Lambdac2625, 2);
-
-            // note the normalization N_A = 1.0 in [MvD2015].
-            return 4.0 / 3.0 * (pow(F120(q2max), 2) + r * pow(F12T(q2max), 2) + 2.0 * pow(F12P(q2max), 2) + 6.0 * pow(F32P(q2max), 2));
-        }
-
-        double g_inel() const
-        {
-            const double r = pow((m_Lambdab + m_Lambdac2625) / (m_Lambdab - m_Lambdac2625), 2);
-            const double q2max = pow(m_Lambdab - m_Lambdac2625, 2);
-
-            // note the normalization N_A = 3.0 in [MvD2015].
-            return 4.0 / 9.0 * (pow(G120(q2max), 2) + r * pow(G12T(q2max), 2) + 2.0 * pow(G12P(q2max), 2) + 6.0 * pow(G32P(q2max), 2));
-        }
     };
 
     LambdabToLambdac2625LeptonNeutrino::LambdabToLambdac2625LeptonNeutrino(const Parameters & parameters, const Options & options) :
@@ -292,18 +274,6 @@ namespace eos
         }
 
         return br_taus / br_muons;
-    }
-
-    double
-    LambdabToLambdac2625LeptonNeutrino::f_inel() const
-    {
-        return _imp->f_inel();
-    }
-
-    double
-    LambdabToLambdac2625LeptonNeutrino::g_inel() const
-    {
-        return _imp->g_inel();
     }
 
     const std::string
