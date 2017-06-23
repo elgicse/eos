@@ -21,13 +21,13 @@
 #define EOS_GUARD_EOS_FORM_FACTORS_BARYONIC_IMPL_HH 1
 
 #include <eos/form-factors/baryonic.hh>
+#include <eos/form-factors/hqet-b-to-c.hh>
 #include <eos/utils/complex.hh>
 #include <eos/utils/kinematic.hh>
 #include <eos/utils/model.hh>
 #include <eos/utils/options.hh>
 #include <eos/utils/power_of.hh>
 #include <eos/utils/polylog.hh>
-#include <eos/utils/stringify.hh>
 
 namespace eos
 {
@@ -251,10 +251,7 @@ namespace eos
         public FormFactors<OneHalfPlusToThreeHalfMinus>
     {
         private:
-            std::shared_ptr<Model> _model;
-
-            UsedParameter _m_b_msbar;
-            UsedParameter _m_c_msbar;
+            HQETBToC _b_to_c;
 
             UsedParameter _rho, _rho3b, _c, _c3b;
 
@@ -296,276 +293,6 @@ namespace eos
                 return _zeta(s, s_max, _c3b, _rho3b);
             }
 
-            /* auxilliary functions from [N1993] */
-
-            // r(omega) is defined in [N1993] eq. (3.104), p. 63
-            inline static double r(const double & omega)
-            {
-                if (omega < 1.0)
-                    throw InternalError("BBGIOvD2017FormFactorsHQET::r omega = '" + stringify(omega) + "' outside its domain of validity");
-
-                // for small omega - 1, taylor expand r up to second order
-                if ((omega - 1.0) < 1.0e-5)
-                {
-                    const double c0 = +1.0;
-                    const double c1 = -1.0 / 3.0;
-                    const double c2 = +4.0 / 30.0;
-
-                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
-                }
-
-                return log(omega + sqrt(omega * omega - 1.0)) / sqrt(omega * omega - 1.0);
-            }
-
-            // f(omega) is defined in [N1993] eq. (3.117), p. 65
-            inline static double f(const double & omega)
-            {
-                if (omega < 1.0)
-                    throw InternalError("BBGIOvD2017FormFactorsHQET::f omega = '" + stringify(omega) + "' outside its domain of validity");
-
-                // for small omega - 1, taylor expand f up to second order
-                if ((omega - 1.0) < 1.0e-5)
-                {
-                    const double c0 = -3.0;
-                    const double c1 = -10.0 / 9.0;
-                    const double c2 = +2.0 / 150.0;
-
-                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
-                }
-
-                const double omega_m = omega - sqrt(omega * omega - 1.0);
-                const double L2      = real(dilog(complex<double>(1.0 - omega_m * omega_m, 0.0)));
-                const double r_omega = r(omega);
-
-                return omega * r_omega - 2.0 - omega / sqrt(omega * omega - 1.0) * (L2 + (omega * omega - 1.0) * r_omega * r_omega);
-            }
-
-            // g(z, omega) is defined in [N1993] eq. (3.129), p. 70
-            inline static double g(const double & z, const double & omega)
-            {
-                if (omega < 1.0)
-                    throw InternalError("BBGIOvD2017FormFactorsHQET::g omega = '" + stringify(omega) + "' outside its domain of validity");
-
-                // for small omega - 1, taylor expand g up to second order
-                if ((omega - 1.0) < 1.0e-5)
-                {
-                    const double c0 = z * log(z) / (z - 1.0);
-                    const double c1 = z * (2.0 - 2.0 * z + (1.0 + z) * log(z)) / pow(z - 1.0, 3);
-                    const double c2 = z * (1.0 + 9.0 * z - 9.0 * z * z - z * z + z + 6.0 * z * (1.0 + z) * log(z)) / (3.0 * pow(z - 1.0, 5));
-
-                    return c0 + (omega - 1.0) * c1 + pow(omega - 1.0, 2) * c2;
-                }
-
-                const double omega_m = omega - sqrt(omega * omega - 1.0);
-                const double omega_p = omega + sqrt(omega * omega - 1.0);
-                const double L2_p    = real(dilog(complex<double>(1.0 - z * omega_p, 0.0)));
-                const double L2_m    = real(dilog(complex<double>(1.0 - z * omega_m, 0.0)));
-                const double r_omega = r(omega);
-
-                return omega / sqrt(omega * omega - 1.0) * (L2_m - L2_p)
-                    - z / (1.0 - 2.0 * omega * z + z * z) * ((omega * omega - 1.0) * r_omega + (omega - z) * log(z));
-            }
-
-            /* anomalous dimensions and auxilliaries for next-to-leading log terms */
-
-            // a_hh(omega) is defined in [N1993] eq. (3.119), p. 66
-            inline static double a_hh(const double & omega)
-            {
-                return 8.0 / 27.0 * (omega * r(omega) - 1.0);
-            }
-
-            // Z_hh(omega) is defined in [N1993] eq. (3.119), p. 66
-            // Note that we use only the Taylor expansion in (omega - 1) up to second order.
-            inline static double Z_hh(const double & omega)
-            {
-                return 8.0 / (81.0) * (94.0 / 9.0 - M_PI * M_PI) * (omega - 1.0)
-                    - 4.0 / 135.0 * (92.0 / 9.0 - M_PI * M_PI) * pow(omega - 1.0, 2);
-            }
-
-            // S_{1,2,3}^{(5)} for the two currents are defined in [N1993] eq. (3.145)
-            inline static double S_1(const double & x, const double & omega)
-            {
-                return omega * (17.0 / 27.0 - 5.0 / 9.0 * pow(x, -6.0 / 25.0) - 2.0 / 27.0 * pow(x, -9.0 / 25.0) + 8.0 / 25.0 * log(x))
-                    + (1.0 / 6.0 - 5.0 / 9.0 * pow(x, -6.0 / 25.0) + 4.0 / 9.0 * pow(x, -9.0 / 25.0) - 1.0 / 18.0 * pow(x, -12.0 / 25.0));
-            }
-            inline static double S_1_5(const double & x, const double & omega)
-            {
-                return omega * (17.0 / 27.0 - 5.0 / 9.0 * pow(x, -6.0 / 25.0) - 2.0 / 27.0 * pow(x, -9.0 / 25.0) + 8.0 / 25.0 * log(x))
-                    - (1.0 / 6.0 - 5.0 / 9.0 * pow(x, -6.0 / 25.0) + 4.0 / 9.0 * pow(x, -9.0 / 25.0) - 1.0 / 18.0 * pow(x, -12.0 / 25.0));
-            }
-            inline static double S_2(const double & x, const double & omega)
-            {
-                return -omega * (14.0 / 27.0 + 10.0 / 9.0 * pow(x, -6.0 / 25.0) - 44.0 / 27.0 * pow(x, -9.0 / 25.0))
-                    + (2.0 / 3.0 + 5.0 / 9.0 * pow(x, -6.0 / 25.0) + 2.0 / 9.0 * pow(x, -9.0 / 25.0) - 13.0 / 9.0 * pow(x, -12.0 / 25.0));
-            }
-            inline static double S_2_5(const double & x, const double & omega)
-            {
-                return +omega * (14.0 / 27.0 + 10.0 / 9.0 * pow(x, -6.0 / 25.0) - 44.0 / 27.0 * pow(x, -9.0 / 25.0))
-                    + (2.0 / 3.0 + 5.0 / 9.0 * pow(x, -6.0 / 25.0) + 2.0 / 9.0 * pow(x, -9.0 / 25.0) - 13.0 / 9.0 * pow(x, -12.0 / 25.0));
-            }
-            inline static double S_3(const double & x)
-            {
-                return 1.0 - 5.0 / 3.0 * pow(x, -6.0 / 25.0) + 2.0 / 3.0 * pow(x, -9.0 / 25.0);
-            }
-            inline static double S_3_5(const double & x) { return S_3(x); }
-
-            // we use the form factors at a fixed scale mu = m_c
-            inline double mu() const
-            {
-                return _m_c_msbar();
-            }
-
-            // we use a fixed matching scale mu_match = sqrt(m_b * m_c)
-            inline double mu_match() const
-            {
-                return sqrt(_m_b_msbar() * _m_c_msbar());
-            }
-
-            // universal mu-dependence of the Wilson coefficients
-            inline double K_hh(const double & omega) const
-            {
-                const double alpha_s_mu = _model->alpha_s(mu());
-
-                return pow(alpha_s_mu, -a_hh(omega)) * (1.0 - alpha_s_mu / M_PI * Z_hh(omega));
-            }
-
-            // universal prefactor A
-            inline double A(const double & omega) const
-            {
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-
-                return pow(alpha_s_mc / alpha_s_mb, 6.0 / 25.0) * pow(alpha_s_mc, a_hh(omega));
-            }
-
-            // h_2(z, omega) is defined in [N1993] eq. (3.129), p. 70
-            inline static double h_2(const double & z, const double & omega)
-            {
-                const double denom = 1.0 - 2.0 * omega * z + z * z;
-
-                return z / pow(denom, 2) * (
-                        2.0 * (omega - 1.0) * z * (1.0 + z) * log(z)
-                        - (
-                            (omega + 1.0) - 2.0 * omega * (2.0 * omega + 1.0) * z
-                            + (5.0 * omega + 2.0 * omega * omega - 1.0) * z * z - 2.0 * z * z * z
-                        ) * r(omega)
-                    ) - z / denom * (log(z) - 1.0 + z);
-            }
-            // h_2_5(z, omega) is defined in [N1993] eq. (3.129), p. 70
-            inline static double h_2_5(const double & z, const double & omega)
-            {
-                const double denom = 1.0 - 2.0 * omega * z + z * z;
-
-                return z / pow(denom, 2) * (
-                        2.0 * (omega + 1.0) * z * (1.0 - z) * log(z)
-                        - (
-                            (omega - 1.0) - 2.0 * omega * (2.0 * omega - 1.0) * z
-                            + (5.0 * omega - 2.0 * omega * omega + 1.0) * z * z - 2.0 * z * z * z
-                        ) * r(omega)
-                    ) - z / denom * (log(z) - 1.0 - z);
-            }
-
-            // hatted Wilson coefficients without the universal mu-dependence,
-            // cf. [N1993] eq. (3.142), p. 74
-            double Chat_1_v(const double & omega) const
-            {
-                static const double Z_4 = -9403.0 / 7500.0 - 7.0 * M_PI * M_PI / 225.0;
-
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double G          = g(z, omega) + 3.0 * omega * z * log(z);
-
-                return A(omega) * (
-                    1.0
-                    + (alpha_s_mb - alpha_s_mc) / M_PI * Z_4 + alpha_s_mc / M_PI * (Z_hh(omega) + 2.0 / 3.0 * (f(omega) + r(omega)))
-                    + z * S_1(x, omega) + 2.0 * alpha_s_m / (3.0 * M_PI) * G
-                );
-            }
-            double Chat_2_v(const double & omega) const
-            {
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h1         = h_2(1.0 / z, omega) - 2.0 * r(omega) + 1.0;
-                const double H1         = h1 - (3.0 - 2.0 * omega) * z * log(z);
-
-                return A(omega) * (
-                    + 2.0 * alpha_s_mb / (3.0 * M_PI)
-                    - 4.0 * alpha_s_mc / (3.0 * M_PI) * r(omega)
-                    + z * S_2(x, omega)
-                    - 2.0 * alpha_s_m / (3.0 * M_PI) * H1
-                );
-            }
-            double Chat_3_v(const double & omega) const
-            {
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2(z, omega);
-                const double H2         = h2 + z * log(z);
-
-                return -A(omega) * (
-                    + z * S_3(x)
-                    + 2.0 * alpha_s_m / (3.0 * M_PI) * H2
-                );
-            }
-            double Chat_1_a(const double & omega) const
-            {
-                static const double Z_4 = -9403.0 / 7500.0 - 7.0 * M_PI * M_PI / 225.0;
-
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double G          = g(z, omega) + 3.0 * omega * z * log(z);
-
-                return A(omega) * (
-                    1.0
-                    + (alpha_s_mb - alpha_s_mc) / M_PI * Z_4 + alpha_s_mc / M_PI * (Z_hh(omega) + 2.0 / 3.0 * (f(omega) - r(omega)))
-                    + z * S_1_5(x, omega) + 2.0 * alpha_s_m / (3.0 * M_PI) * G
-                );
-            }
-            double Chat_2_a(const double & omega) const
-            {
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h1         = h_2_5(1.0 / z, omega) - 2.0 * r(omega) - 1.0;
-                const double H1         = h1 - (3.0 + 2.0 * omega) * z * log(z);
-
-                return A(omega) * (
-                    - 2.0 * alpha_s_mb / (3.0 * M_PI)
-                    - 4.0 * alpha_s_mc / (3.0 * M_PI) * r(omega)
-                    + z * S_2_5(x, omega)
-                    - 2.0 * alpha_s_m / (3.0 * M_PI) * H1
-                );
-            }
-            double Chat_3_a(const double & omega) const
-            {
-                const double alpha_s_mb = _model->alpha_s(_m_b_msbar());
-                const double alpha_s_mc = _model->alpha_s(_m_c_msbar());
-                const double alpha_s_m  = _model->alpha_s(mu_match());
-                const double x          = alpha_s_mc / alpha_s_mb;
-                const double z          = _m_c_msbar() / _m_b_msbar();
-                const double h2         = h_2_5(z, omega);
-                const double H2         = h2 + z * log(z);
-
-                return +A(omega) * (
-                    + z * S_3_5(x)
-                    + 2.0 * alpha_s_m / (3.0 * M_PI) * H2
-                );
-            }
-
             inline double omega(const double & s) const
             {
                 return (mLb2 + mLcs2 - s) / (2.0 * mLb * mLcs);
@@ -579,14 +306,13 @@ namespace eos
 
         public:
             BBGIOvD2017FormFactors(const Parameters & p) :
-                _model(Model::make("SM", p, Options{ })),
-                _m_b_msbar(p["mass::b(MSbar)"], *this),
-                _m_c_msbar(p["mass::c"], *this),
+                _b_to_c(p, Options{ }),
                 _rho(p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT"], *this),
                 _rho3b(p["Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT"], *this),
                 _c(p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"], *this),
                 _c3b(p["Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT"], *this)
             {
+                uses(_b_to_c);
             }
 
             static FormFactors<OneHalfPlusToThreeHalfMinus> * make(const Parameters & parameters, unsigned)
@@ -601,10 +327,9 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_v(omegabar);
-                const double C_2 = Khh * Chat_2_v(omegabar);
-                const double C_3 = Khh * Chat_3_v(omegabar);
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
+                const double C_2 = _b_to_c.c_2_vector(omegabar);
+                const double C_3 = _b_to_c.c_3_vector(omegabar);
 
                 double result = C_1 * sp;
                 result += (mLb + mLcs) / (mLb - mLcs) * (mLb2 - mLcs2 + s) / (2.0 * mLb ) * (lambdabar      + C_2 * sp / (mLb + mLcs));
@@ -624,10 +349,9 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_v(omegabar);
-                const double C_2 = Khh * Chat_2_v(omegabar);
-                const double C_3 = Khh * Chat_3_v(omegabar);
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
+                const double C_2 = _b_to_c.c_2_vector(omegabar);
+                const double C_3 = _b_to_c.c_3_vector(omegabar);
 
                 double result = C_1 + sp * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb + mLcs));
                 result *= sm;
@@ -645,8 +369,7 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_v(omegabar);
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
 
                 double result = C_1 * sm + (3.0 * mLb2 + mLcs2 - s) / (2.0 * mLb) * lambdabar - (mLb2 + 3.0 * mLcs2 - s) / (2.0 * mLcs) * lambdabarprime;
                 result *= _z(s);
@@ -672,10 +395,9 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_a(omegabar);
-                const double C_2 = Khh * Chat_2_a(omegabar);
-                const double C_3 = Khh * Chat_3_a(omegabar);
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
+                const double C_2 = _b_to_c.c_2_axialvector(omegabar);
+                const double C_3 = _b_to_c.c_3_axialvector(omegabar);
 
                 double result = C_1 * sm;
                 result += (mLb - mLcs) / (mLb + mLcs) * (mLb2 - mLcs2 + s) / (2.0 * mLb ) * (lambdabar      - C_2 * sm / (mLb - mLcs));
@@ -694,10 +416,9 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_a(omegabar);
-                const double C_2 = Khh * Chat_2_a(omegabar);
-                const double C_3 = Khh * Chat_3_a(omegabar);
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
+                const double C_2 = _b_to_c.c_2_axialvector(omegabar);
+                const double C_3 = _b_to_c.c_3_axialvector(omegabar);
 
                 double result = C_1 - sm * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb - mLcs));
                 result *= sp;
@@ -715,8 +436,7 @@ namespace eos
                 const double sm       = _s_minus(s);
                 const double sp       = _s_plus(s);
 
-                const double Khh = K_hh(omegabar);
-                const double C_1 = Khh * Chat_1_a(omegabar);
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
 
                 double result = C_1 * sp + (3.0 * mLb2 + mLcs2 - s) / (2.0 * mLb) * lambdabar - (mLb2 + 3.0 * mLcs2 - s) / (2.0 * mLcs) * lambdabarprime;
                 result *= _z(s);
