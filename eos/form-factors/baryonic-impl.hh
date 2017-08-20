@@ -224,6 +224,221 @@ namespace eos
             }
     };
 
+    template <typename Transition_, typename Process_> class BBGIOvD2017FormFactors;
+
+    /*
+     * J=1/2^+ -> J=1/2^- transitions
+     */
+    struct LambdaBToLambdaC2595 {
+        static constexpr const char * label = "Lambda_b->Lambda_c(2595)";
+        // initial state mass
+        static constexpr double m1 = 5.61951;
+        // final state mass
+        static constexpr double m2 = 2.59225;
+        // semileptonic kinematic endpoint
+        static constexpr double tm = (m1 - m2) * (m1 - m2);
+        // pair production threshold: Lambda_b + Lambda_c(2625)
+        static constexpr double tp = (m1 + m2) * (m1 + m2);
+        // first resonances sorted by spin/parity
+        // we use the shifts from [DLM2015], table VII.
+        static constexpr double mBc = 6.2751;
+        static constexpr double mR2_0m = std::pow(mBc + 0.000, 2);
+        static constexpr double mR2_0p = std::pow(mBc + 0.449, 2);
+        static constexpr double mR2_1m = std::pow(mBc + 0.056, 2);
+        static constexpr double mR2_1p = std::pow(mBc + 0.492, 2);
+    };
+
+    template <typename Process_> class BBGIOvD2017FormFactors<OneHalfPlusToOneHalfMinus, Process_> :
+        public FormFactors<OneHalfPlusToOneHalfMinus>
+    {
+        private:
+            HQETBToC _b_to_c;
+
+            UsedParameter _rho, _rho3b, _c, _c3b;
+
+            static constexpr double mLb = Process_::m1;
+            static constexpr double mLcs = Process_::m2;
+            static constexpr double mLb2 = mLb * mLb;
+            static constexpr double mLcs2 = mLcs * mLcs;
+
+            static constexpr double m_b_pole = 4.8;
+            static constexpr double m_c_pole = 1.4;
+
+            static constexpr double lambdabar = mLb - m_b_pole;
+            static constexpr double lambdabarprime = mLcs - m_c_pole;
+
+            static constexpr double s_max = (mLb - mLcs) * (mLb - mLcs);
+
+            // auxiliary kinematics functions
+            static constexpr double _s_plus(const double & s)
+            {
+                return std::pow((mLb + mLcs), 2) - s;
+            }
+            static constexpr double _s_minus(const double & s)
+            {
+                return std::pow((mLb - mLcs), 2) - s;
+            }
+
+            // parametrization of the Isgur-Wise functions
+            static constexpr double _zeta(const double & s, const double & s_max, const double & c, const double & rho)
+            {
+                return c + rho * (1.0 - s / s_max);
+            }
+            double _z(const double & s) const
+            {
+                return _zeta(s, s_max, _c, _rho);
+            }
+
+            double _z3b(const double & s) const
+            {
+                return _zeta(s, s_max, _c3b, _rho3b);
+            }
+
+            inline double omega(const double & s) const
+            {
+                return (mLb2 + mLcs2 - s) / (2.0 * mLb * mLcs);
+            }
+
+            inline double omegabar(const double & s) const
+            {
+                return omega(s) * (1.0 + lambdabar / m_b_pole + lambdabarprime / m_c_pole)
+                    - (lambdabar / m_c_pole + lambdabarprime / m_b_pole);
+            }
+
+        public:
+            BBGIOvD2017FormFactors(const Parameters & p) :
+                _b_to_c(p, Options{ }),
+                _rho(p["Lambda_b->Lambda_c(2625)::rho@BBGIOvD2017-HQT"], *this),
+                _rho3b(p["Lambda_b->Lambda_c(2625)::rho3b@BBGIOvD2017-HQT"], *this),
+                _c(p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"], *this),
+                _c3b(p["Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT"], *this)
+            {
+                uses(_b_to_c);
+            }
+
+            static FormFactors<OneHalfPlusToOneHalfMinus> * make(const Parameters & parameters, unsigned)
+            {
+                return new BBGIOvD2017FormFactors(parameters);
+            }
+
+            // vector current
+            virtual double f_time_v(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
+                const double C_2 = _b_to_c.c_2_vector(omegabar);
+                const double C_3 = _b_to_c.c_3_vector(omegabar);
+
+                double result = C_1 * sp;
+                result += (mLb + mLcs) / (mLb - mLcs) * (mLb2 - mLcs2 + s) / (2.0 * mLb ) * (lambdabar      + C_2 * sp / (mLb + mLcs));
+                result -= (mLb + mLcs) / (mLb - mLcs) * (mLb2 - mLcs2 - s) / (2.0 * mLcs) * (lambdabarprime - C_3 * sp
+/ (mLb + mLcs));
+                result *= _z(s);
+
+                result += (sp + 2.0 * s) / (mLb - mLcs) * _z3b(s);
+                result *= 0.5 * sqrt(sm / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+
+            virtual double f_long_v(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
+                const double C_2 = _b_to_c.c_2_vector(omegabar);
+                const double C_3 = _b_to_c.c_3_vector(omegabar);
+
+                double result = C_1 + sp * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb + mLcs));
+                result *= sm;
+                result += (mLb - mLcs) / (mLb + mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLb) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
+                result *= _z(s);
+                result += (mLb2 - mLcs2 - s) / (mLb + mLcs) * _z3b(s);
+                result *= 0.5 * sqrt(sp / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+
+            virtual double f_perp_v(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_vector(omegabar);
+
+                double result = C_1 * sm + (3.0 * mLb2 + mLcs2 - s) / (2.0 * mLb) * lambdabar - (mLb2 + 3.0 * mLcs2 - s) / (2.0 * mLcs) * lambdabarprime;
+                result *= _z(s);
+                result += 2.0 * mLcs * _z3b(s);
+                result *= 0.5 * sqrt(sp / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+
+            // axial vector current
+            virtual double f_time_a(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
+                const double C_2 = _b_to_c.c_2_axialvector(omegabar);
+                const double C_3 = _b_to_c.c_3_axialvector(omegabar);
+
+                double result = C_1 * sm;
+                result += (mLb - mLcs) / (mLb + mLcs) * (mLb2 - mLcs2 + s) / (2.0 * mLb ) * (lambdabar      - C_2 * sm / (mLb - mLcs));
+                result -= (mLb - mLcs) / (mLb + mLcs) * (mLb2 - mLcs2 - s) / (2.0 * mLcs) * (lambdabarprime + C_3 * sm / (mLb - mLcs));
+                result *= _z(s);
+
+                result += sm / (mLb + mLcs) * _z3b(s);
+                result *= 0.5 * sqrt(sp / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+
+            virtual double f_long_a(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
+                const double C_2 = _b_to_c.c_2_axialvector(omegabar);
+                const double C_3 = _b_to_c.c_3_axialvector(omegabar);
+
+                double result = C_1 - sm * (C_2 * mLcs + C_3 * mLb) / (2.0 * mLb * mLcs * (mLb - mLcs));
+                result *= sp;
+                result += (mLb + mLcs) / (mLb - mLcs) * ((mLb2 - mLcs2 + s) / (2.0 * mLb) * lambdabar - (mLb2 - mLcs2 - s) / (2.0 * mLcs) * lambdabarprime);
+                result *= _z(s);
+                result += (mLb2 - mLcs2 + s) / (mLb - mLcs) * _z3b(s);
+                result *= 0.5 * sqrt(sm / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+
+            virtual double f_perp_a(const double & s) const
+            {
+                const double omegabar = this->omegabar(s);
+                const double sm       = _s_minus(s);
+                const double sp       = _s_plus(s);
+
+                const double C_1 = _b_to_c.c_1_axialvector(omegabar);
+
+                double result = C_1 * sp + (3.0 * mLb2 + mLcs2 - s) / (2.0 * mLb) * lambdabar - (mLb2 + 3.0 * mLcs2 - s) / (2.0 * mLcs) * lambdabarprime;
+                result *= _z(s);
+                result += 2.0 * (mLb - 2.0 * mLcs) * _z3b(s);
+                result *= 0.5 * sqrt(sm / pow(mLb * mLcs, 3));
+
+                return result;
+            }
+    };
+
     /*
      * J=1/2^+ -> J=3/2^- transitions
      */
@@ -246,7 +461,7 @@ namespace eos
         static constexpr double mR2_1p = std::pow(mBc + 0.492, 2);
     };
 
-    template <typename Process_> class BBGIOvD2017FormFactors :
+    template <typename Process_> class BBGIOvD2017FormFactors<OneHalfPlusToThreeHalfMinus, Process_> :
         public FormFactors<OneHalfPlusToThreeHalfMinus>
     {
         private:

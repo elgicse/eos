@@ -36,6 +36,11 @@ namespace eos
     struct OneHalfPlusToOneHalfPlus { };
 
     /*
+     * J=1/2^+ -> J=1/2^- transitions
+     */
+    struct OneHalfPlusToOneHalfMinus { };
+
+    /*
      * J=1/2^+ -> J=3/2^- transitions
      */
     struct OneHalfPlusToThreeHalfMinus { };
@@ -67,6 +72,29 @@ namespace eos
     {
         public:
             static std::shared_ptr<FormFactors<OneHalfPlusToOneHalfPlus>> create(const std::string & label, const Parameters & parameters);
+    };
+
+    template <>
+    class FormFactors<OneHalfPlusToOneHalfMinus> :
+        public ParameterUser
+    {
+        public:
+            virtual ~FormFactors();
+
+            virtual double f_time_v(const double & s) const = 0;
+            virtual double f_long_v(const double & s) const = 0;
+            virtual double f_perp_v(const double & s) const = 0;
+
+            virtual double f_time_a(const double & s) const = 0;
+            virtual double f_long_a(const double & s) const = 0;
+            virtual double f_perp_a(const double & s) const = 0;
+    };
+
+    template <>
+    class FormFactorFactory<OneHalfPlusToOneHalfMinus>
+    {
+        public:
+            static std::shared_ptr<FormFactors<OneHalfPlusToOneHalfMinus>> create(const std::string & label, const Parameters & parameters);
     };
 
     template <>
