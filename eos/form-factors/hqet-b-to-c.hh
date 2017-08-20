@@ -3,6 +3,7 @@
 #ifndef EOS_GUARD_EOS_FORM_FACTORS_HQET_B_TO_C_HH
 #define EOS_GUARD_EOS_FORM_FACTORS_HQET_B_TO_C_HH 1
 
+#include <eos/utils/diagnostics.hh>
 #include <eos/utils/options.hh>
 #include <eos/utils/parameters.hh>
 #include <eos/utils/private_implementation_pattern.hh>
@@ -36,6 +37,9 @@ namespace eos
             double c_2_axialvector(const double & omega) const;
             double c_3_axialvector(const double & omega) const;
             // @}
+
+            /* Diagnostics for unit tests */
+            Diagnostics diagnostics() const;
     };
 }
 

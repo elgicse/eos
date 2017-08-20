@@ -35,6 +35,7 @@ TESTS = \
 	analytic-b-to-pi_TEST \
 	analytic-b-to-pi-pi_TEST \
 	baryonic_TEST \
+	hqet-b-to-c_TEST \
 	mesonic_TEST \
 	pi-lcdas_TEST
 LDADD = \
@@ -49,6 +50,8 @@ analytic_b_to_pi_TEST_SOURCES = analytic-b-to-pi_TEST.cc
 analytic_b_to_pi_pi_TEST_SOURCES = analytic-b-to-pi-pi_TEST.cc
 
 baryonic_TEST_SOURCES = baryonic_TEST.cc
+
+hqet_b_to_c_TEST_SOURCES = hqet-b-to-c_TEST.cc
 
 mesonic_TEST_SOURCES = mesonic_TEST.cc
 

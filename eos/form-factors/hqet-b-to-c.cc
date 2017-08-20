@@ -241,9 +241,10 @@ namespace eos
             const double z          = m_c_msbar() / m_b_msbar();
             const double h2         = h_2(z, omega);
             const double H2         = h2 + z * log(z);
+            const double S_3        = this->S_3(x);
 
             return -A(omega) * (
-                + z * S_3(x)
+                + z * S_3
                 + 2.0 * alpha_s_m / (3.0 * M_PI) * H2
             );
         }
@@ -295,6 +296,99 @@ namespace eos
                 + z * S_3_5(x)
                 + 2.0 * alpha_s_m / (3.0 * M_PI) * H2
             );
+        }
+
+        Diagnostics diagnostics() const
+        {
+            Diagnostics results;
+
+            // Inputs
+            {
+                const double alpha_s_mb = model->alpha_s(m_b_msbar());
+                const double alpha_s_mc = model->alpha_s(m_c_msbar());
+                const double alpha_s_m  = model->alpha_s(mu_match());
+                const double x          = alpha_s_mc / alpha_s_mb;
+                const double z          = m_c_msbar() / m_b_msbar();
+
+                results.add(Diagnostics::Entry{ alpha_s_mb, "alpha_s(m_b^MSbar)" });
+                results.add(Diagnostics::Entry{ alpha_s_mc, "alpha_s(m_c^MSbar)" });
+                results.add(Diagnostics::Entry{ alpha_s_m,  "alpha_s(mu_match)"  });
+
+                results.add(Diagnostics::Entry{ x, "x = alpha_s_mc / alpha_s_mb" });
+                results.add(Diagnostics::Entry{ z, "z = m_c / m_b"               });
+            }
+
+            // Universal mu dependence
+            {
+                results.add(Diagnostics::Entry{ K_hh(1.0), "K_hh(1.0)" });
+                results.add(Diagnostics::Entry{ K_hh(1.1), "K_hh(1.1)" });
+                results.add(Diagnostics::Entry{ K_hh(1.2), "K_hh(1.2)" });
+            }
+
+            // Chat_1_v
+            {
+                static const double z = 0.305024;
+                static const double Z_4 = -9403.0 / 7500.0 - 7.0 * M_PI * M_PI / 225.0;
+                results.add(Diagnostics::Entry{ Z_4, "Z_4" });
+
+                results.add(Diagnostics::Entry{ A(1.0), "A(1.0)" });
+                results.add(Diagnostics::Entry{ A(1.1), "A(1.1)" });
+                results.add(Diagnostics::Entry{ A(1.2), "A(1.2)" });
+
+                results.add(Diagnostics::Entry{ f(1.0), "f(1.0)" });
+                results.add(Diagnostics::Entry{ f(1.1), "f(1.1)" });
+                results.add(Diagnostics::Entry{ f(1.2), "f(1.2)" });
+
+                results.add(Diagnostics::Entry{ g(z, 1.0), "g(z = 0.305024, omega = 1.0)" });
+                results.add(Diagnostics::Entry{ g(z, 1.1), "g(z = 0.305024, omega = 1.1)" });
+                results.add(Diagnostics::Entry{ g(z, 1.2), "g(z = 0.305024, omega = 1.2)" });
+
+                results.add(Diagnostics::Entry{ g(z, 1.0) + 3.0 * 1.0 * z * log(z), "G(z = 0.305024, omega = 1.0)" });
+                results.add(Diagnostics::Entry{ g(z, 1.1) + 3.0 * 1.1 * z * log(z), "G(z = 0.305024, omega = 1.1)" });
+                results.add(Diagnostics::Entry{ g(z, 1.2) + 3.0 * 1.2 * z * log(z), "G(z = 0.305024, omega = 1.2)" });
+
+                results.add(Diagnostics::Entry{ r(1.0), "r(1.0)" });
+                results.add(Diagnostics::Entry{ r(1.1), "r(1.1)" });
+                results.add(Diagnostics::Entry{ r(1.2), "r(1.2)" });
+
+                results.add(Diagnostics::Entry{ S_1(1.7589, 1.0), "S_1(x = 1.7589, omega = 1.0)" });
+                results.add(Diagnostics::Entry{ S_1(1.7589, 1.1), "S_1(x = 1.7589, omega = 1.1)" });
+                results.add(Diagnostics::Entry{ S_1(1.7589, 1.2), "S_1(x = 1.7589, omega = 1.2)" });
+
+                results.add(Diagnostics::Entry{ Z_hh(1.0), "Z_hh(1.0)" });
+                results.add(Diagnostics::Entry{ Z_hh(1.1), "Z_hh(1.1)" });
+                results.add(Diagnostics::Entry{ Z_hh(1.2), "Z_hh(1.2)" });
+
+            }
+
+            // Hatted Wilson coefficients
+            {
+                results.add(Diagnostics::Entry{ Chat_1_v(1.0), "Chat_1_v(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_1_v(1.1), "Chat_1_v(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_1_v(1.2), "Chat_1_v(1.2)" });
+
+                results.add(Diagnostics::Entry{ Chat_2_v(1.0), "Chat_2_v(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_2_v(1.1), "Chat_2_v(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_2_v(1.2), "Chat_2_v(1.2)" });
+
+                results.add(Diagnostics::Entry{ Chat_3_v(1.0), "Chat_3_v(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_3_v(1.1), "Chat_3_v(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_3_v(1.2), "Chat_3_v(1.2)" });
+
+                results.add(Diagnostics::Entry{ Chat_1_a(1.0), "Chat_1_a(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_1_a(1.1), "Chat_1_a(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_1_a(1.2), "Chat_1_a(1.2)" });
+
+                results.add(Diagnostics::Entry{ Chat_2_a(1.0), "Chat_2_a(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_2_a(1.1), "Chat_2_a(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_2_a(1.2), "Chat_2_a(1.2)" });
+
+                results.add(Diagnostics::Entry{ Chat_3_a(1.0), "Chat_3_a(1.0)" });
+                results.add(Diagnostics::Entry{ Chat_3_a(1.1), "Chat_3_a(1.1)" });
+                results.add(Diagnostics::Entry{ Chat_3_a(1.2), "Chat_3_a(1.2)" });
+            }
+
+            return results;
         }
     };
 
@@ -351,5 +445,11 @@ namespace eos
         const double Khh = _imp->K_hh(omega);
 
         return Khh * _imp->Chat_3_a(omega);
+    }
+
+    Diagnostics
+    HQETBToC::diagnostics() const
+    {
+        return _imp->diagnostics();
     }
 }
