@@ -336,7 +336,7 @@ namespace eos
 / (mLb + mLcs));
                 result *= _z(s);
 
-                result += (sp + 2.0 * s) / (mLb + mLcs) * _z3b(s);
+                result += (sp + 2.0 * s) / (mLb - mLcs) * _z3b(s);
                 result *= 0.5 * sqrt(sm / pow(mLb * mLcs, 3));
 
                 return result;
