@@ -21,6 +21,7 @@
 #define EOS_GUARD_EOS_FORM_FACTORS_BARYONIC_HH 1
 
 #include <eos/form-factors/form-factors-fwd.hh>
+#include <eos/utils/diagnostics.hh>
 #include <eos/utils/parameters.hh>
 
 #include <memory>
@@ -113,6 +114,8 @@ namespace eos
             virtual double f_long12_a(const double & s) const = 0;
             virtual double f_perp12_a(const double & s) const = 0;
             virtual double f_perp32_a(const double & s) const = 0;
+
+            virtual Diagnostics diagnostics() const;
     };
 
     template <>

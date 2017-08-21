@@ -243,6 +243,12 @@ namespace eos
     {
     }
 
+    Diagnostics
+    FormFactors<OneHalfPlusToThreeHalfMinus>::diagnostics() const
+    {
+        return { };
+    }
+
     std::shared_ptr<FormFactors<OneHalfPlusToThreeHalfMinus>>
     FormFactorFactory<OneHalfPlusToThreeHalfMinus>::create(const std::string & label, const Parameters & parameters)
     {

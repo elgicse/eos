@@ -668,6 +668,46 @@ namespace eos
 
                 return result;
             }
+
+            virtual Diagnostics diagnostics() const
+            {
+                Diagnostics results;
+
+                // s = s_max
+                {
+                    const double s        = s_max;
+                    const double omega    = this->omega(s);
+                    const double omegabar = this->omegabar(s);
+                    const double C_1_v    = _b_to_c.c_1_vector(omegabar);
+                    const double C_2_v    = _b_to_c.c_2_vector(omegabar);
+                    const double C_3_v    = _b_to_c.c_3_vector(omegabar);
+                    const double C_1_a    = _b_to_c.c_1_axialvector(omegabar);
+                    const double C_2_a    = _b_to_c.c_2_axialvector(omegabar);
+                    const double C_3_a    = _b_to_c.c_3_axialvector(omegabar);
+
+                    results.add({ s,              "s = s_max"       });
+                    results.add({ omega,          "omega(s_max)"    });
+                    results.add({ omegabar,       "omegabar(s_max)" });
+                    results.add({ C_1_v,          "C_1_v(s_max)"    });
+                    results.add({ C_2_v,          "C_2_v(s_max)"    });
+                    results.add({ C_3_v,          "C_3_v(s_max)"    });
+                    results.add({ C_1_a,          "C_1_a(s_max)"    });
+                    results.add({ C_2_a,          "C_2_a(s_max)"    });
+                    results.add({ C_3_a,          "C_3_a(s_max)"    });
+                    results.add({ lambdabar,      "LambdaBar"       });
+                    results.add({ lambdabarprime, "LambdaBar'"      });
+                    results.add({ f_time12_v(s),  "F_{1/2,time}"    });
+                    results.add({ f_long12_v(s),  "F_{1/2,long}"    });
+                    results.add({ f_perp12_v(s),  "F_{1/2,perp}"    });
+                    results.add({ f_perp32_v(s),  "F_{3/2,perp}"    });
+                    results.add({ f_time12_a(s),  "G_{1/2,time}"    });
+                    results.add({ f_long12_a(s),  "G_{1/2,long}"    });
+                    results.add({ f_perp12_a(s),  "G_{1/2,perp}"    });
+                    results.add({ f_perp32_a(s),  "G_{3/2,perp}"    });
+                }
+
+                return results;
+            }
     };
 }
 
