@@ -31,6 +31,9 @@ namespace eos
 
         /* exclusive inelastic contributions */
 
+        // Lambda_b -> Lambda_c(2595) form factors
+        std::shared_ptr<FormFactors<OneHalfPlusToOneHalfMinus>> ff_2595;
+
         // Lambda_b -> Lambda_c(2625) form factors
         std::shared_ptr<FormFactors<OneHalfPlusToThreeHalfMinus>> ff_2625;
 
@@ -45,6 +48,7 @@ namespace eos
             wM(p["Lambda_b->Lambda_c::wM@ZRSR"], u),
             mu2_pi(p["Lambda_b->Lambda_b::mu_pi^2@1GeV"], u),
             rho3_D(p["Lambda_b->Lambda_b::rho_D^3@1GeV"], u),
+            ff_2595(FormFactorFactory<OneHalfPlusToOneHalfMinus>::create("Lambda_b->Lambda_c(2595)@" + o.get("form-factors", "BBGIOvD2017"), p)),
             ff_2625(FormFactorFactory<OneHalfPlusToThreeHalfMinus>::create("Lambda_b->Lambda_c(2625)@" + o.get("form-factors", "BBGIOvD2017"), p)),
             m_Lambda_b(p["mass::Lambda_b"], u),
             m_Lambda_c_2595(p["mass::Lambda_c(2595)"], u),
@@ -148,26 +152,38 @@ namespace eos
         {
             const double q2max = pow(m_Lambda_b - m_Lambda_c_2625, 2);
             const double r     = pow((m_Lambda_b + m_Lambda_c_2625) / (m_Lambda_b - m_Lambda_c_2625), 2);
+            const double fT    = ff_2595->f_time_v(q2max);
+            const double f0    = ff_2595->f_long_v(q2max);
+            const double fP    = ff_2595->f_perp_v(q2max);
             const double F12T  = ff_2625->f_time12_v(q2max);
             const double F120  = ff_2625->f_long12_v(q2max);
             const double F12P  = ff_2625->f_perp12_v(q2max);
             const double F32P  = ff_2625->f_perp32_v(q2max);
 
             // note the normalization N_A = 1.0 in [MvD2015].
-            return 4.0 / 3.0 * (pow(F120, 2) + r * pow(F12T, 2) + 2.0 * pow(F12P, 2) + 6.0 * pow(F32P, 2));
+            const double f_inel_2595 =  2.0 / 3.0 * (pow(f0,   2) + r * pow(fT,   2) + 2.0 * pow(fP,   2));
+            const double f_inel_2625 =  4.0 / 3.0 * (pow(F120, 2) + r * pow(F12T, 2) + 2.0 * pow(F12P, 2) + 6.0 * pow(F32P, 2));
+
+            return f_inel_2595 + f_inel_2625;
         }
 
         double g_inel() const
         {
             const double q2max = pow(m_Lambda_b - m_Lambda_c_2625, 2);
             const double r     = pow((m_Lambda_b + m_Lambda_c_2625) / (m_Lambda_b - m_Lambda_c_2625), 2);
+            const double gT    = ff_2595->f_time_a(q2max);
+            const double g0    = ff_2595->f_long_a(q2max);
+            const double gP    = ff_2595->f_perp_a(q2max);
             const double G12T  = ff_2625->f_time12_a(q2max);
             const double G120  = ff_2625->f_long12_a(q2max);
             const double G12P  = ff_2625->f_perp12_a(q2max);
             const double G32P  = ff_2625->f_perp32_a(q2max);
 
             // note the normalization N_A = 3.0 in [MvD2015].
-            return 4.0 / 9.0 * (pow(G120, 2) + r * pow(G12T, 2) + 2.0 * pow(G12P, 2) + 6.0 * pow(G32P, 2));
+            const double g_inel_2595 = 2.0 / 9.0 * (pow(g0,   2) + r * pow(gT,   2) + 2.0 * pow(gP,   2));
+            const double g_inel_2625 = 4.0 / 9.0 * (pow(G120, 2) + r * pow(G12T, 2) + 2.0 * pow(G12P, 2) + 6.0 * pow(G32P, 2));
+
+            return g_inel_2595 + g_inel_2625;
         }
     };
 
