@@ -78,3 +78,28 @@ class BFvD2014FormFactorsTest :
             TEST_CHECK_NEARLY_EQUAL(0.780, ff->f_perp_a(20.0), eps);
         }
 } bfvd2014_form_factors_test;
+
+class BBGIOvD2017ThreeHalfFormFactorsTest :
+    public TestCase
+{
+    public:
+        BBGIOvD2017ThreeHalfFormFactorsTest() :
+            TestCase("bbgiovd2017_three_half_form_factors_test")
+        {
+        }
+
+        virtual void run() const
+        {
+            Parameters p = Parameters::Defaults();
+            p["Lambda_b->Lambda_c(2625)::c@BBGIOvD2017-HQT"]   = 1.0;
+            p["Lambda_b->Lambda_c(2625)::c3b@BBGIOvD2017-HQT"] = 2.0;
+
+            auto ff = FormFactorFactory<OneHalfPlusToThreeHalfMinus>::create("Lambda_b->Lambda_c(2625)@BBGIOvD2017", p);
+
+            Diagnostics diag = ff->diagnostics();
+            for (auto d : diag)
+            {
+                std::cout << d.description << ": " << d.value << std::endl;
+            }
+        }
+} bbgiovd2017_three_half_form_factors_test;

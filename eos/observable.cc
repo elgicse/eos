@@ -272,11 +272,11 @@ namespace eos
             make_observable("Lambda_b->Lambda_c::G(1)",
                     &ZeroRecoilSumRule<LambdaBToC>::axialvector_current),
 
-            make_observable("Lambda_b->Lambda_c(2625)::F_inel(1)",
-                    &LambdabToLambdac2625LeptonNeutrino::f_inel),
+            make_observable("Lambda_b->Lambda_c::F_inel(1)",
+                    &ZeroRecoilSumRule<LambdaBToC>::vector_current_inel),
 
-            make_observable("Lambda_b->Lambda_c(2625)::G_inel(1)",
-                    &LambdabToLambdac2625LeptonNeutrino::g_inel),
+            make_observable("Lambda_b->Lambda_c::G_inel(1)",
+                    &ZeroRecoilSumRule<LambdaBToC>::axialvector_current_inel),
 
             /* Exclusive Decays */
 
@@ -542,6 +542,10 @@ namespace eos
 
             make_observable("Lambda_b->Lambda_c(2625)lnu::BR",
                             &LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio,
+                            std::make_tuple("s_min", "s_max")),
+
+            make_observable("Lambda_b->Lambda_c(2625)lnu::A_FB",
+                            &LambdabToLambdac2625LeptonNeutrino::integrated_forward_backward_asymmetry,
                             std::make_tuple("s_min", "s_max")),
 
             make_observable("Lambda_b->Lambda_c(2625)lnu::Gamma_normalized(s_min,s_max)",
