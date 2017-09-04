@@ -41,7 +41,11 @@ namespace eos
     double integrate(const std::function<double (const double &)> & f, unsigned n, const double & a, const double & b);
     complex<double> integrate(const std::function<complex<double> (const double &)> & f, unsigned n, const double & a, const double & b);
 
+    double integrate_with_parameter(const std::function<double (const double &)> & f, unsigned n, const double & a, const double & b, const double & param);
+    complex<double> integrate_with_parameter(const std::function<complex<double> (const double &)> & f, unsigned n, const double & a, const double & b, const double & param);
+
     template <std::size_t k> std::array<double, k> integrate(const std::function<std::array<double, k> (const double &)> & f, unsigned n, const double & a, const double & b);
+    template <std::size_t k> std::array<double, k> integrate_with_parameter(const std::function<std::array<double, k> (const double &)> & f, unsigned n, const double & a, const double & b, const double & param);
     /// @}
 }
 
