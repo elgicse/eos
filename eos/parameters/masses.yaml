@@ -118,7 +118,7 @@
 
 # b baryon masses
 "mass::Lambda_b" :
-    central: +5.6194
+    central: +5.61951
     min:     +5.6187
     max:     +5.6201
     comments: "cf. [PDG2012], p. 165"
