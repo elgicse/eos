@@ -156,6 +156,10 @@ namespace eos
                     &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio,
                     KinematicRange{ "s", 0.011, 8.9478, LambdabToLambdac2625LeptonNeutrino::kinematics_description_s }),
 
+            make_signal_pdf("Lambda_b->Lambda_c(2625)lnu::dGamma_dcostheta",
+                    &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio,
+                    KinematicRange{ "cos(theta_l)", -1.0, +1.0, LambdabToLambdac2625LeptonNeutrino::kinematics_description_c_theta_l }),
+
             make_signal_pdf("Lambda_b->Lambda_c(2625)lnu::d^2Gamma",
                     &LambdabToLambdac2625LeptonNeutrino::double_differential_branching_ratio,
                     KinematicRange{ "s", 0.011, 8.9478, LambdabToLambdac2625LeptonNeutrino::kinematics_description_s },

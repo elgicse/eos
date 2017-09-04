@@ -540,6 +540,10 @@ namespace eos
                             &LambdabToLambdac2625LeptonNeutrino::double_differential_branching_ratio,
                             std::make_tuple("s", "theta_l")),
 
+            make_observable("Lambda_b->Lambda_c(2625)lnu::dBR/dtheta_l",
+                            &LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio_theta,
+                            std::make_tuple("theta_l")),
+
             make_observable("Lambda_b->Lambda_c(2625)lnu::BR",
                             &LambdabToLambdac2625LeptonNeutrino::integrated_branching_ratio,
                             std::make_tuple("s_min", "s_max")),
