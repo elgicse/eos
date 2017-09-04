@@ -161,6 +161,14 @@ namespace eos
             return differential_decay_width(s) * tau_Lambdab / hbar;
         }
 
+        double differential_branching_ratio_theta(const double & t, const double & s_min, const double & s_max) const
+        {
+            std::function<double (const double &)> f = std::bind(&Implementation<LambdabToLambdac2625LeptonNeutrino>::double_differential_branching_ratio,
+                    *this, std::placeholders::_1, t);
+
+            return integrate_with_parameter(f, 512, s_min, s_max, t);
+        }
+
         double double_differential_branching_ratio(const double & s, const double & theta_l) const
         {
             return double_differential_decay_width(s, theta_l) * tau_Lambdab / hbar;
@@ -206,6 +214,15 @@ namespace eos
     LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio(const double & s) const
     {
         return _imp->differential_branching_ratio(s);
+    }
+
+    double
+    LambdabToLambdac2625LeptonNeutrino::differential_branching_ratio_theta(const double & theta_l) const
+    {
+        const double abs_s_min = pow(_imp->m_l, 2);
+        const double abs_s_max = pow(_imp->m_Lambdab - _imp->m_Lambdac2625, 2);
+
+        return _imp->differential_branching_ratio_theta(theta_l, abs_s_min, abs_s_max);
     }
 
     double

@@ -57,6 +57,7 @@ namespace eos
 
             // Differential Observables
             double differential_branching_ratio(const double & s) const;
+            double differential_branching_ratio_theta(const double & theta_l) const;
             double double_differential_branching_ratio(const double & s, const double & theta_l) const;
 
             // Integrated Observables
